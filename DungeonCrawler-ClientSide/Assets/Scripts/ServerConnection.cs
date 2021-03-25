@@ -15,7 +15,7 @@ public class ServerConnection : MonoBehaviour
 	string message;
 	void ConnectToServer()
 	{
-		IPEndPoint iPEndPoint = new IPEndPoint(address, 8564);
+		IPEndPoint iPEndPoint = new IPEndPoint(address, 8561);
 		socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		try
 		{

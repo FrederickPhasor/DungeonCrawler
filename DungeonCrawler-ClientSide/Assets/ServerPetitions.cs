@@ -8,6 +8,7 @@ public class ServerPetitions : MonoBehaviour
     [SerializeField] TMP_InputField username;
     [SerializeField] TMP_InputField email;
     [SerializeField] TMP_InputField password;
+    [SerializeField] TextMeshProUGUI onlineUsersText;
     void Start()
     {
         server = GetComponent<ServerConnection>();
@@ -15,11 +16,12 @@ public class ServerPetitions : MonoBehaviour
     public void SignUp()
 	{
         server.SendPetition($"1/{username.text}/{email.text}/{password.text}");
-	}
+        Debug.Log(server.WaitForAnswer());
+    }
     public void SignIn()
 	{
-        server.SendPetition($"2/{username.text}/{password.text}/");
-    }
+		server.SendPetition($"2/{username.text}/{password.text}/");
+	}
     public void ChangePassword()
 	{
         server.SendPetition($"3/{email.text}/{password.text}/");
@@ -32,13 +34,28 @@ public class ServerPetitions : MonoBehaviour
     }
     public void GetAllOnlineUsers()
 	{
-
-	}
+        server.SendPetition($"6/");
+        string[] users = server.WaitForAnswer().Split('/');
+        Debug.Log(users.Length);
+        foreach(string user in users)
+		{
+            
+            if(user != null)
+			{
+                onlineUsersText.text += user;
+                
+			}
+        }
+    }
     public void GetRecentPlayers()
 	{
         server.SendPetition($"5/{username.text}/");
         Debug.Log(server.WaitForAnswer());
-
     }
-   
+    public void Disconnect()
+	{
+        server.SendPetition("0/");
+        server.DisconnectFromServer();
+
+	}
 }

@@ -2,7 +2,7 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - ServerConnection
-    - UIController
+    - ServerPetitions
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
@@ -18,9 +18,6 @@ ScriptsOnlyBuild:
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
     - UnityEditor.Tilemaps.TilemapPrefabStageHelper
-    Unity.CollabProxy.Editor.dll:
-    - Unity.Cloud.Collaborate.UserInterface.CollaborateWindow
-    - Unity.Cloud.Collaborate.UserInterface.WindowCache
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro.dll:
@@ -33,10 +30,8 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -48,12 +43,11 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
-    - UnityEngine.UI.GridLayoutGroup
     - UnityEngine.UI.Image
     - UnityEngine.UI.LayoutElement
     - UnityEngine.UI.RectMask2D
   sceneClasses:
-    Assets/Scenes/SampleScene.unity:
+    Assets/Scenes/MainMenu.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -68,50 +62,42 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 49
       Script: {instanceID: 0}
-    - Class: 74
-      Script: {instanceID: 0}
     - Class: 81
-      Script: {instanceID: 0}
-    - Class: 91
-      Script: {instanceID: 0}
-    - Class: 95
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1512}
+      Script: {instanceID: 1538}
     - Class: 114
-      Script: {instanceID: 1546}
+      Script: {instanceID: 1572}
     - Class: 114
-      Script: {instanceID: 1636}
+      Script: {instanceID: 1600}
     - Class: 114
-      Script: {instanceID: 1782}
+      Script: {instanceID: 1664}
     - Class: 114
-      Script: {instanceID: 2090}
+      Script: {instanceID: 1810}
     - Class: 114
-      Script: {instanceID: 2434}
+      Script: {instanceID: 2118}
     - Class: 114
-      Script: {instanceID: 2470}
+      Script: {instanceID: 2462}
     - Class: 114
-      Script: {instanceID: 2616}
+      Script: {instanceID: 2498}
     - Class: 114
-      Script: {instanceID: 2658}
+      Script: {instanceID: 2644}
     - Class: 114
-      Script: {instanceID: 2786}
+      Script: {instanceID: 2686}
     - Class: 114
-      Script: {instanceID: 2996}
+      Script: {instanceID: 2814}
     - Class: 114
-      Script: {instanceID: 3098}
+      Script: {instanceID: 3024}
     - Class: 114
-      Script: {instanceID: 4208}
+      Script: {instanceID: 3126}
     - Class: 114
-      Script: {instanceID: 4228}
+      Script: {instanceID: 4238}
     - Class: 114
-      Script: {instanceID: 4556}
+      Script: {instanceID: 4258}
     - Class: 114
-      Script: {instanceID: 4974}
-    - Class: 114
-      Script: {instanceID: 60660}
+      Script: {instanceID: 4586}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -147,6 +133,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_InputField
+  - hash:
+      serializedVersion: 2
+      Hash: 91307b54337953d97068881833b8200d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ServerPetitions
   - hash:
       serializedVersion: 2
       Hash: 71b711096c6c32621c1d4c02310898b7
@@ -263,7 +255,7 @@ ScriptsOnlyBuild:
     className: EnumerableTestState
   - hash:
       serializedVersion: 2
-      Hash: 0ed1bd1ed7e599b53ad5f76e881bd62a
+      Hash: 380aa4895126ac631cbee9e2dea8c662
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ServerConnection
@@ -399,6 +391,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.2D.SpriteShape.Runtime.dll
     namespaceName: UnityEngine.U2D
     className: SpriteShapeController
+  - hash:
+      serializedVersion: 2
+      Hash: d36606bbb7aaa5522358632aba3c585f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UIController
   - hash:
       serializedVersion: 2
       Hash: 4fd8bf02e3089425d3502e26c44ba31a
@@ -651,13 +649,7 @@ ScriptsOnlyBuild:
     assemblyName: Unity.2D.IK.Runtime.dll
     namespaceName: UnityEngine.U2D.IK
     className: FabrikSolver2D
-  - hash:
-      serializedVersion: 2
-      Hash: d36606bbb7aaa5522358632aba3c585f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: UIController
   platform: 5
   scenePathNames:
-  - Assets/Scenes/SampleScene.unity
+  - Assets/Scenes/MainMenu.unity
   playerPath: C:/UnityProjectsUni/Builds/DungeonCrawler-ClientSide.exe

@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 void StartServer( struct sockaddr_in* serverAddress ){
 	serverSocket = socket(AF_INET,SOCK_STREAM,0);
 	(*serverAddress).sin_family = AF_INET;
-	(*serverAddress).sin_port = htons(9008);/////////////////////////////////////////////////////////////////////////////
+	(*serverAddress).sin_port = htons(9011);/////////////////////////////////////////////////////////////////////////////
 	(*serverAddress).sin_addr.s_addr = INADDR_ANY;
 	if(bind(serverSocket, (struct sockaddr*) &(*serverAddress), sizeof(*serverAddress)) < 0)
 		printf("Error en el bind\n");
@@ -81,12 +81,12 @@ void* ClientLoop(void* socket){
 	
 	int socketConnection = *((int*) socket);
 	for(;;){
-		char rawRequest[100];
+		char rawRequest[500];
 		printf("Thread Waiting\n");
 		int lenghtInBytes = read(socketConnection, rawRequest, sizeof(rawRequest));	
 		rawRequest[lenghtInBytes] = '\0'; //End of line
-		char request[100];
-		char reply[100];
+		char request[500];
+		char reply[500];
 		int ans = CookRequest(rawRequest, request, socketConnection);//Return -1 if disconnect, 0 if we have to send the database result to client, 1 if we dont need to,  -2 else if neither of them.
 		if(ans == -1){
 			printf("El usuario con indice :%d, quiere desconectarse\n", GetIndexOf(socketConnection));
@@ -94,7 +94,6 @@ void* ClientLoop(void* socket){
 			int res = DeleteUser(GetIndexOf(socketConnection));
 			UnlockThread();
 			int  err = close(socketConnection);
-			
 			if(err == 0){
 				printf("cerrando socket");
 			}

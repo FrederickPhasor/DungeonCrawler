@@ -35,27 +35,32 @@ public class ServerPetitions : MonoBehaviour
     public void GetAllOnlineUsers()
 	{
         server.SendPetition($"6/");
-        string[] users = server.WaitForAnswer().Split('/');
-        Debug.Log(users.Length);
-        foreach(string user in users)
-		{
-            
-            if(user != null)
-			{
-                onlineUsersText.text += user;
-                
-			}
-        }
+        
+        ShowInDebugScreen(server.WaitForAnswer());
+
+
     }
     public void GetRecentPlayers()
 	{
         server.SendPetition($"5/{username.text}/");
-        Debug.Log(server.WaitForAnswer());
+        ShowInDebugScreen(server.WaitForAnswer());
+        
     }
     public void Disconnect()
 	{
         server.SendPetition("0/");
         server.DisconnectFromServer();
-
 	}
+    void ShowInDebugScreen(string content){
+        Debug.Log(content);
+        onlineUsersText.text = "";
+        string[] splitContent = content.Split('/');
+        foreach (string word in splitContent)
+        {
+            if (word != null)
+            {
+                onlineUsersText.text += word + '\n';
+            }
+        }
+    }
 }

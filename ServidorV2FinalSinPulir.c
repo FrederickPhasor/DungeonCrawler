@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -52,7 +51,7 @@ int main(int argc, char *argv[]) {
 void StartServer( struct sockaddr_in* serverAddress ){
 	serverSocket = socket(AF_INET,SOCK_STREAM,0);
 	(*serverAddress).sin_family = AF_INET;
-	(*serverAddress).sin_port = htons(9003);/////////////////////////////////////////////////////////////////////////////
+	(*serverAddress).sin_port = htons(9008);/////////////////////////////////////////////////////////////////////////////
 	(*serverAddress).sin_addr.s_addr = INADDR_ANY;
 	if(bind(serverSocket, (struct sockaddr*) &(*serverAddress), sizeof(*serverAddress)) < 0)
 		printf("Error en el bind\n");
@@ -65,10 +64,9 @@ int WaitForClient(){
 	return socket;
 }
 void CreateNewThreadForClient(int * socket){
-	
 	pthread_t thread;
 	LockThread();
-	printf("Before creating Socket %d\n", *socket);
+	printf("Creating Thread with socket: %d\n", *socket);
 	pthread_create(&thread,NULL, ClientLoop,socket);
 	UnlockThread();
 }
@@ -89,29 +87,32 @@ void* ClientLoop(void* socket){
 		rawRequest[lenghtInBytes] = '\0'; //End of line
 		char request[100];
 		char reply[100];
-		int ans = CookRequest(rawRequest, request, socketConnection);//returns 1 if we must not return data from database, -1 if disconnect
+		int ans = CookRequest(rawRequest, request, socketConnection);//Return -1 if disconnect, 0 if we have to send the database result to client, 1 if we dont need to,  -2 else if neither of them.
 		if(ans == -1){
-			printf("El usurio quiere desconectarse\n");
+			printf("El usuario con indice :%d, quiere desconectarse\n", GetIndexOf(socketConnection));
 			LockThread();
 			int res = DeleteUser(GetIndexOf(socketConnection));
 			UnlockThread();
-			close(socketConnection);
-			printf("Thread cerrado\n");
+			int  err = close(socketConnection);
 			
-			//WIP
-			exit(0);
-		}
-		else{
-			if(ans == 0){
-				//enviarle la request a la base de datos
-				LockThread();
-				AskToDataBase(request, reply);
-				UnlockThread();
+			if(err == 0){
+				printf("cerrando socket");
 			}
-			write(socketConnection, reply, strlen(reply));
+			if(res == 0){
+				printf("Usuario eliminado\n");
+			}
+			break;
 		}
-		
+		else if(ans != -2){
+			LockThread();
+			AskToDataBase(request, reply);
+			UnlockThread();
+			if(ans == 0){
+				write(socketConnection, reply, strlen(reply));
+			}
+		}
 	}
+	printf("Final del thread de este usuario\n");
 }
 int CookRequest(char* rawRequest, char* request, int socket){
 	char username[22];
@@ -131,9 +132,8 @@ int CookRequest(char* rawRequest, char* request, int socket){
 		string = strtok(NULL,"/");
 		strcpy(password,string);
 		sprintf(request, "INSERT INTO PLAYERS VALUES (NULL,'%s','%s','%s');", username,email, password);
-		return 0;
+		return 1;
 	case 2 : //sign in
-		//work in progress
 		string = strtok(NULL,"/");
 		strcpy(username,string);
 		string = strtok(NULL,"/");
@@ -145,26 +145,26 @@ int CookRequest(char* rawRequest, char* request, int socket){
 		char* a = strtok(credentialsCheck, "/");
 		char c[20];
 		strcpy(c,a);
-		printf("El usuario encontrado es %s",c);
+		printf("El usuario encontrado es %s\n",c);
 		if(strcmp(c, username) == 0){
-			printf("Se ha iniciado sesi'on");
+			printf("Se ha iniciado sesi'on\n");
 			LockThread();
 			connectedClients.list[connectedClients.num].socket = socket;
 			strcpy(connectedClients.list[connectedClients.num].name, username);
 			connectedClients.num++;
 			for(int i = 0; i < connectedClients.num ;i++){
-				printf("%s",connectedClients.list[i].name);
+				printf("%s\n",connectedClients.list[i].name);
 			}
 			UnlockThread();
 		}
-		break;
+		return -2;
 	case 3 : //change password
 		string = strtok(NULL, "/");
 		strcpy(email,string);
 		string = strtok(NULL, "/");
 		strcpy(password, string);
 		sprintf (request, "UPDATE PLAYERS SET PASSWORD = REPLACE(PASSWORD, PASSWORD, '%s') WHERE PLAYERS.EMAIL = '%s'", password, email);
-		return 0;
+		return 1;
 	case 4 : //change email
 		string = strtok(NULL, "/");
 		strcpy(email, string);
@@ -173,7 +173,7 @@ int CookRequest(char* rawRequest, char* request, int socket){
 		string = strtok(NULL, "/");
 		strcpy(password, string);
 		sprintf (request, "UPDATE PLAYERS SET EMAIL = REPLACE(EMAIL, EMAIL, '%s') WHERE PLAYERS.PASSWORD = '%s' AND PLAYERS.EMAIL = '%s'", newEmail, password, email);
-		return 0;
+		return 1;
 	case 5 : //Get Recent Players Faced By a Player Given As a Parameter
 		string= strtok(NULL, "/");
 		strcpy(username, string);
@@ -181,11 +181,12 @@ int CookRequest(char* rawRequest, char* request, int socket){
 				"AND ID IN(SELECT PLAYER1 FROM RECORD WHERE GAME_ID IN(SELECT GAME_ID FROM RECORD WHERE PLAYER1 IN (SELECT ID FROM PLAYERS WHERE NICKNAME = '%s'))));", username, username);
 		return 0;
 	case 6 : //returns as a string all curent players online
-		printf("Se ha pedido lista de usuarios");
+		printf("Se ha pedido lista de usuarios\n");
 		char test[100];
 		OnlineUsers(test);
 		strcpy(request, test);
-		return 1;
+		write(socket, request, strlen(request));
+		return -2;
 		default : ;
 	}
 }
@@ -210,20 +211,26 @@ int GetIndexOf (int socket){
 	int find = 0;
 	while (( i < connectedClients.num) && !find)
 	{
+		printf("Buscando usuario con socket : %d\n", socket);
 		connectedClients.list[i].socket == socket ? find = 1 : i++;
 	}
 	if (find)
 		return i;
-	else
+	else{
+		printf("Not found\n");
 		return -1;
+	}
+
 }
 void OnlineUsers (char* reply){
 	int i;
 	strcpy(reply,"\0");
 	for (i=0; i < connectedClients.num; i++)
 	{
-		strcat(reply, connectedClients.list[i].name);
-		strcat(reply,"/");
+		if(connectedClients.list[i].name != NULL){
+			strcat(reply, connectedClients.list[i].name);	
+			strcat(reply,"/");
+		}
 	}
 }
 void AskToDataBase(char* request, char* reply){
@@ -239,7 +246,7 @@ void AskToDataBase(char* request, char* reply){
 		//No hemos tenido respuesta, comprobamos si se trata de un error o no
 		if(mysql_field_count(DBConn) == 0)
 		{
-			strcpy(reply, "No hay resultados.");
+			strcpy(reply, "No hay resultados. Todo correcto en principio");
 			// query does not return data
 			// (it was not a SELECT)
 		}

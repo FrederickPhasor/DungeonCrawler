@@ -5,46 +5,68 @@ using TMPro;
 using System.Net;
 using System.Net.Sockets;
 using System;
+using System.Threading;
+
 public class ServerConnection : MonoBehaviour
 {
 	Socket socket;
-	IPAddress address = IPAddress.Parse("192.168.56.101");
+	Thread listen;
+	ServerPetitions petitions;
+	IPAddress address = IPAddress.Parse("192.168.56.103");
 	[SerializeField] TMP_InputField dynamicIP;
 	[SerializeField] TMP_InputField dynamicPort;
-	private void Start()
+	void Start()
 	{
-		dynamicIP.text = "192.168.56.101";
-		dynamicPort.text = "9087";
+		petitions = GetComponent<ServerPetitions>();
+		dynamicIP.text = "192.168.56.103";
+		dynamicPort.text = "9012";
 	}
-	public void  ConnectToServer()
+	public void ConnectToServer()
 	{
 		IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(dynamicIP.text), Int32.Parse(dynamicPort.text));
 		socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		try
 		{
 			socket.Connect(iPEndPoint);
-			socket.ReceiveTimeout = 2000;
+			//socket.ReceiveTimeout = 2000;
 		}
 		catch
 		{
 			Debug.Log("Something went wrong with the server connection.");
 		}
+
+		ThreadStart ts = delegate { ListenToServer(); };
+		listen = new Thread(ts);
+		listen.Start();
 	}
 	public void SendPetition(string message)
 	{
 		socket.Send(System.Text.Encoding.ASCII.GetBytes(message));
 	}
-	public string WaitForAnswer()
+	public void WaitForAnswer()
 	{
-		if (!socket.Connected)
-			return "No connection stablished";
 		byte[] rawAnswer = new byte[120];
 		socket.Receive(rawAnswer);
-		string message = System.Text.Encoding.ASCII.GetString(rawAnswer);
-		return message;
+		string[] parts = System.Text.Encoding.ASCII.GetString(rawAnswer).Split(new[] { '/' }, 2);
+		int num = Convert.ToInt32(parts[0]);
+		string message = parts[1];
+		if (num == 6)
+		{
+			petitions.ShowInDebugScreen(message);
+		}
+		else petitions.ShowInDebugScreen(message);
+	}
+
+	public void ListenToServer()
+	{
+		while (true)
+		{
+			WaitForAnswer();
+		}
 	}
 	public void DisconnectFromServer()
 	{
+		listen.Abort();
 		socket.Close();
 	}
 }

@@ -33,6 +33,14 @@ public class ServerPetitions : MonoBehaviour
         server.Ask("0/");
         server.DisconnectFromServer();
     }
+    public void  Invite(string name)
+	{
+        //server.Ask("8/name");
+	}  
+    public void AnswerInvitation()
+	{
+        //server.Ask("7/y");
+	}
     private void OnApplicationQuit()
     {
         Disconnect();

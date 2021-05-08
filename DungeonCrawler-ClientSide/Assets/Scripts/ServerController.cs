@@ -18,8 +18,8 @@ public class ServerController : MonoBehaviour
 	delegate void EmptyDelegate();
 	void Start()
 	{
-		dynamicIP.text = "147.83.117.22";
-		dynamicPort.text = "50006";
+		dynamicIP.text = "192.168.56.101";
+		dynamicPort.text = "9047";
 		listenForServer = new Thread(ListenForServer);
 		ConnectToServer();
 		
@@ -84,6 +84,16 @@ public class ServerController : MonoBehaviour
 					Debug.Log("USers Update");
 					UI.SetOnlineUsers(parts[1]);
 					break;
+				case 7:
+					//Recibido invitación
+					// 7/nombre de quien te ha invitado
+					break;
+				case 8:
+					//Respuesta de invitación enviada
+					// 8/y/nombreDelInvitado || 8/n/nombreDelInvitado 
+					break;
+
+				
 			}
 		}
 	}

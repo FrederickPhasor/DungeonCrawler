@@ -5,6 +5,7 @@ using TMPro;
 public class UIController : MonoBehaviour
 {
 	[SerializeField] GameObject onlineUsersList;
+	[SerializeField] GameObject onlineUsersMenuGameObject;
 	[SerializeField] GameObject recentPlayersList;
 	string[] onlineUsersContent;
 	string[] recentPlayersContent;
@@ -18,6 +19,8 @@ public class UIController : MonoBehaviour
 		error = false;
 		loginMenu.SetActive(true);
 		lobbyMenu.SetActive(false);
+		showOnlineUsersMenu = false;
+		onlineUsersMenuGameObject.SetActive(false);
 		int j = 0;
 		while (j < onlineUsersList.transform.childCount)
 		{
@@ -38,6 +41,13 @@ public class UIController : MonoBehaviour
 			DisplayOnlineUsers();
 			display = false;
 		}
+	}
+	bool showOnlineUsersMenu;
+	public void ActiveOnlineUsersMenu()
+	{
+		showOnlineUsersMenu = !showOnlineUsersMenu;
+		onlineUsersMenuGameObject.SetActive(showOnlineUsersMenu);
+		lobbyMenu.SetActive(!showOnlineUsersMenu);
 	}
 	public void SetOnlineUsers(string rawList)
 	{

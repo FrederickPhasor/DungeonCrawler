@@ -623,7 +623,7 @@ PlayerSettings:
   cloudServicesEnabled:
     Analytics: 1
     Build: 0
-    Collab: 0
+    Collab: 1
     Game Performance: 0
     Purchasing: 0
     UDP: 0
@@ -641,11 +641,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: f02ce262-7b00-49f1-90a9-59b0ad6114cc
+  cloudProjectId: 623f2fde-85ce-434d-9a67-dce5d85dbe15
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: DungeonCrawler-ClientSide
-  organizationId: unity_00d24a829ab1eb0f99e5
+  organizationId: alexpinto10
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   virtualTexturingSupportEnabled: 0

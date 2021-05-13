@@ -18,6 +18,7 @@ public class ServerPetitions : MonoBehaviour
     }
     public void SignIn()
     {
+        PlayerData.pData.playerName = username.text;
         server.Ask($"2/{username.text}/{password.text}/");
     }
     public void ChangePassword()
@@ -31,16 +32,25 @@ public class ServerPetitions : MonoBehaviour
     public void Disconnect()
     {
         server.Ask("0/");
+        LeaveGroupServer();
         server.DisconnectFromServer();
     }
-    public void  Invite(string name)
+    public void Invite(string name)
 	{
-        //server.Ask("8/name");
+        server.Ask($"8/{name}/");
 	}  
-    public void AnswerInvitation()
-	{
-        //server.Ask("7/y");
-	}
+    public void AnwserInviteYes(string who)
+    {
+        server.Ask($"7/Y/{who}/");
+    }
+    public void AnwserInviteNo(string who)
+    {
+        server.Ask($"7/N/{who}/");
+    }
+    public void LeaveGroupServer()
+    {
+        server.Ask("9/");
+    }
     private void OnApplicationQuit()
     {
         Disconnect();

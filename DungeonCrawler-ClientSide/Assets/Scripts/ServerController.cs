@@ -19,7 +19,7 @@ public class ServerController : MonoBehaviour
 	void Start()
 	{
 		dynamicIP.text = "192.168.56.101";
-		dynamicPort.text = "9047";
+		dynamicPort.text = "9064";
 		listenForServer = new Thread(ListenForServer);
 		ConnectToServer();
 		
@@ -53,12 +53,22 @@ public class ServerController : MonoBehaviour
 	{
 		while (true)
 		{
-			Debug.Log("we are at the thread");
-			byte[] rawAnswer = new byte[120];
+			//Debug.Log("we are at the thread");
+			byte[] rawAnswer = new byte[420];
 			socket.Receive(rawAnswer);
 			waitingForServer = false;
 			string[] parts = System.Text.Encoding.ASCII.GetString(rawAnswer).Split(new[] { '/' }, 2);
-			int num = Convert.ToInt32(parts[0]); //What we ordered
+			int num;
+			if (parts[0] != " ")
+			{
+				num =  Convert.ToInt32(parts[0]); //What we ordered
+				
+			}
+			else
+			{
+				Debug.LogError("Thhis shit was null!");
+				num = -1;
+			}
 			switch (num)
 			{
 				case 1://sign up
@@ -69,7 +79,7 @@ public class ServerController : MonoBehaviour
 					if (res == 0)
 					{
 						loggedIn = true;
-						Debug.Log("Sign In correct");
+						//Debug.Log("Sign In correct");
 					}
 					else
 					{
@@ -81,18 +91,20 @@ public class ServerController : MonoBehaviour
 					UI.SetRecentPlayers(parts[1]);
 					break;
 				case 6:
-					Debug.Log("USers Update");
 					UI.SetOnlineUsers(parts[1]);
 					break;
-				case 7:
-					//Recibido invitación
-					// 7/nombre de quien te ha invitado
+				case 7: //nos han invitado
+					UI.PopUpWaiting(parts[1]);
 					break;
-				case 8:
-					//Respuesta de invitación enviada
-					// 8/y/nombreDelInvitado || 8/n/nombreDelInvitado 
+				case 8://Grupo actualizado
+					UI.MakeGroupWaiting(parts[1]);
+					// 8/nombre1/nombre2/etc 
 					break;
-
+				case 9:
+					//9/n
+					break;
+				default:
+					break;
 				
 			}
 		}
@@ -108,6 +120,4 @@ public class ServerController : MonoBehaviour
 		socket.Shutdown(SocketShutdown.Both);
 		socket.Close();
 	}
-	
-	
 }

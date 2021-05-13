@@ -48,7 +48,7 @@ void UnlockThread();
 void* ClientLoop(void* socket);
 int CookRequest(char* request, int socket);
 int GetIndexOf (int socket);
-int GetIndexOf2(char* name);
+int GetSocketOf(char* name);
 int DeleteUser (int index);
 void AskToDataBase(char* request, char* reply);
 int CheckCredentials(char* username, char* password);
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 void StartServer( struct sockaddr_in* serverAddress ){
 	serverSocket = socket(AF_INET,SOCK_STREAM,0);
 	(*serverAddress).sin_family = AF_INET;
-	(*serverAddress).sin_port = htons(9064);/////////////////////////////////////////////////////////////////////////////
+	(*serverAddress).sin_port = htons(9063);/////////////////////////////////////////////////////////////////////////////
 	(*serverAddress).sin_addr.s_addr = INADDR_ANY;
 	if(bind(serverSocket, (struct sockaddr*) &(*serverAddress), sizeof(*serverAddress)) < 0)
 		printf("Error en el bind\n");
@@ -106,15 +106,14 @@ void* ClientLoop(void* socket){
 		printf("Inicio del thread\n");
 		char rawRequest[900];
 		int lenghtInBytes = read(clientSocketID, rawRequest, sizeof(rawRequest));	
-		printf("\n Antes del fin");
 		rawRequest[lenghtInBytes] = '\0';
-		printf("\n despu'es del fin");
+		printf("RawRequest:%s\n",rawRequest);
 		CookRequest(rawRequest, clientSocketID);
 	}
 	printf("Final del thread de este usuario\n");
 }
 int CookRequest(char* rawRequest, int clientSocketID){
-	printf("\ninicio del fuiltro");
+	printf("inicio del filtro\n");
 	char* tempString = strtok(rawRequest,"/");
 	int requestID = atoi(tempString);
 	char DBRequest[500];
@@ -124,6 +123,7 @@ int CookRequest(char* rawRequest, int clientSocketID){
 	char password[50];
 	char newEmail[50];
 	char temp[500];
+	char Answ;
 	int socketBuffer = clientSocketID;
 	switch(requestID){
 	case 0 ://Disconnect
@@ -167,6 +167,7 @@ int CookRequest(char* rawRequest, int clientSocketID){
 			strcpy(connectedClients.list[connectedClients.num].name, username);
 			//se crea un grupo para el solo con su mismo indice
 			todosLosGrupos.grupos[connectedClients.num].players[0].socket = socketBuffer;//Metemos en la posicion 0 el socket del cliente recien conectado
+			strcpy(todosLosGrupos.grupos[connectedClients.num].players[0].name, username);
 			todosLosGrupos.grupos[connectedClients.num].num++;
 			todosLosGrupos.num++;
 			connectedClients.num++;
@@ -210,55 +211,65 @@ int CookRequest(char* rawRequest, int clientSocketID){
 		strcat(temp, reply);
 		break;
 	case 7: // Respuesta a invitación 7/Y/NombreDelQueMeHaInvitado
-		printf("Caso 7 ");
+		printf("Caso 7\n");		
 		tempString= strtok(NULL, "/");
-		strcpy(username, tempString); //Tomamos la respuesta
+		printf("tempString:%s\n",tempString);		
+		//strcpy(Answ, tempString); //Tomamos la respuesta
+		//printf("username:%s",Answ);
+		int x = strcmp(tempString, "Y");
 		
-		if(strcmp(username, "Y") == 0){
-			printf("El jugador ha aceptado");
+		if(x == 0){
+			printf("El jugador ha aceptado\n");
 			//Ha dicho que si quiere jugar
 			tempString= strtok(NULL, "/");
 			strcpy(username, tempString); //Tomamos el nombre de a quien le ha aceptado
-			printf("El usuario es %s", username);
-			int indexDelInvitador = GetIndexOf2(username);
+			printf("El usuario es %s\n", username);
+			int indexDelInvitador = GetIndexOf(GetSocketOf(username));
+			printf("Indice: %d\n", indexDelInvitador);
 			//printf("\nEl usuario : %s ha aceptado una solicitud de : %s", connectedClients.list[GetIndexOf(socketBuffer)].name, username);
 			//Accedemos al grupo del invitador
 			if(todosLosGrupos.grupos[indexDelInvitador].num < 4){//Comprobamos que tenga espacio para almenos uno mas
-				printf("Tenemos un hueco");
 				LockThread();
 				todosLosGrupos.grupos[indexDelInvitador].players[todosLosGrupos.grupos[indexDelInvitador].num].socket = socketBuffer;//Metemos nuestro socket en el Grupo
-				strcpy(todosLosGrupos.grupos[indexDelInvitador].players[todosLosGrupos.grupos[indexDelInvitador].num].name, connectedClients.list[socketBuffer].name);//Metemos nuestro nombre
+				strcpy(todosLosGrupos.grupos[indexDelInvitador].players[todosLosGrupos.grupos[indexDelInvitador].num].name, connectedClients.list[GetIndexOf(socketBuffer)].name);//Metemos nuestro nombre
 				todosLosGrupos.grupos[indexDelInvitador].num++;
 				UnlockThread();
+				
 				//Notificamos a todos los del grupo que se ha unido alguien con 8/player1/player2/etc
 				char notification[100];
 				strcpy(notification, "8/");
-				printf("Tenemos un hueco2");
+				printf("Tenemos un hueco2\n");
 				for(int i = 0; i < todosLosGrupos.grupos[indexDelInvitador].num; i++){
 					strcat(notification,todosLosGrupos.grupos[indexDelInvitador].players[i].name);
-					strcat(notification,"/");
-					
+					strcat(notification,"/");					
 				}
-				strcat(notification, '\0');
+				
+				printf("Notificacion:%s\n", notification);
+				
 				//Enviamos a todos el string con los integrantes
 				for(int j = 0; j < todosLosGrupos.grupos[indexDelInvitador].num; j++){
 					write(todosLosGrupos.grupos[indexDelInvitador].players[j].socket, notification, sizeof(notification));
+					printf("enviando a: %s\n",todosLosGrupos.grupos[indexDelInvitador].players[j].name);
+					printf("enviando a socket: %d\n",todosLosGrupos.grupos[indexDelInvitador].players[j].socket);
 				}
+				
 			}
-			else{
-				//Enviar al invitado el mensaje de que el grupo esta lleno.
-			}
-			
-			
 		}
+		else{
+			printf("pre break else\n");			
+			//Enviar al invitado el mensaje de que el grupo esta lleno.
+		}	
+		break;
+		
 	case 8: // Invitación   8/a quien se ha invitado
 		tempString= strtok(NULL, "/");
 		strcpy(username, tempString); //Tomamos el nombre del invitado
 		//Le pasamos al invitado 7/(nombre(socketbuffer))
-		int socketInvitado = GetIndexOf2(username);
-		sprintf(DBRequest, "7/%s\0",connectedClients.list[GetIndexOf(socketBuffer)].name);
-		printf("\nSe ha enviado una invitacion a : %s",connectedClients.list[GetIndexOf(socketInvitado)].name);
+		int socketInvitado = GetSocketOf(username);
+		sprintf(DBRequest, "7/%s",connectedClients.list[GetIndexOf(socketBuffer)].name);
+		printf("Se ha enviado una invitacion a : %s\n",connectedClients.list[GetIndexOf(socketInvitado)].name);
 		write(socketInvitado, DBRequest, sizeof(DBRequest));
+		printf("%s", DBRequest);
 	}
 }
 void notificarSobreJugadores(int Grupo) {
@@ -290,7 +301,7 @@ int DeleteUser (int index){
 		{
 			connectedClients.list[i] = connectedClients.list[i+1];
 		}
-		printf("\nWe seleted user with index : %d", index);
+		printf("We seleted user with index : %d\n", index);
 		connectedClients.num--;
 		return 0;
 	}
@@ -311,13 +322,16 @@ int GetIndexOf (int socket){
 	}
 }
 
-int GetIndexOf2 (char name[20]){
+int GetSocketOf (char name[20]){
 	int i = 0;
-	int find = 0;
-	while (( i < connectedClients.num) && !find)
+
+	while ( i < connectedClients.num) 
 	{
 		if (strcmp(connectedClients.list[i].name, name) == 0)
+		{
 			return connectedClients.list[i].socket;
+		}
+		i++;
 	}
 	printf("Not found\n");
 	return -1;

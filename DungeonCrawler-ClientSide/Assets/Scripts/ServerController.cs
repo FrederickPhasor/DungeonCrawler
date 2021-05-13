@@ -18,8 +18,8 @@ public class ServerController : MonoBehaviour
 	delegate void EmptyDelegate();
 	void Start()
 	{
-		dynamicIP.text = "192.168.56.101";
-		dynamicPort.text = "9064";
+		dynamicIP.text = "192.168.56.103";
+		dynamicPort.text = "9063";
 		listenForServer = new Thread(ListenForServer);
 		ConnectToServer();
 		
@@ -59,13 +59,13 @@ public class ServerController : MonoBehaviour
 			waitingForServer = false;
 			string[] parts = System.Text.Encoding.ASCII.GetString(rawAnswer).Split(new[] { '/' }, 2);
 			int num;
-			if (parts[0] != " ")
+			Debug.Log("Part0:" + parts[0]);
+			try
 			{
-				num =  Convert.ToInt32(parts[0]); //What we ordered
-				
+				num = Convert.ToInt32(parts[0]); //What we ordered								
 			}
-			else
-			{
+            catch
+            {
 				Debug.LogError("Thhis shit was null!");
 				num = -1;
 			}
@@ -97,6 +97,7 @@ public class ServerController : MonoBehaviour
 					UI.PopUpWaiting(parts[1]);
 					break;
 				case 8://Grupo actualizado
+					Debug.Log("Recibido Group Update");
 					UI.MakeGroupWaiting(parts[1]);
 					// 8/nombre1/nombre2/etc 
 					break;

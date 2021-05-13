@@ -41,7 +41,6 @@ public class UIController : MonoBehaviour
 	{
 		if (logIn)
 		{
-			Debug.LogError("CHANGED NAME" + PlayerData.pData.playerName);
 			PlayerHost.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerData.pData.playerName;
 			logIn = false;
 		}
@@ -197,7 +196,7 @@ public class UIController : MonoBehaviour
 		// overwrite the old array with the new one
 		names = UpdatedNames;
 
-		for (int i = 0 ; i < name.Length-1 ; i++)
+		for (int i = 0 ; i < names.Length-1 ; i++)
         {
 			Players[i].SetActive(true);
 			Players[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = names[i];

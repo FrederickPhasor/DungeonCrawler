@@ -104,6 +104,9 @@ public class ServerController : MonoBehaviour
 				case 9:
 					//9/n
 					break;
+				case 10://Message recived MsgType/msg
+					UI.MessageWaiting(parts[1]);
+					break;
 				default:
 					break;
 				

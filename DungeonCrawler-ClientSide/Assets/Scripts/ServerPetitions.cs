@@ -51,6 +51,10 @@ public class ServerPetitions : MonoBehaviour
     {
         server.Ask("9/");
     }
+    public void MessageToServer(string msg)
+    {
+        server.Ask($"10/{msg}/");
+    }
     private void OnApplicationQuit()
     {
         Disconnect();

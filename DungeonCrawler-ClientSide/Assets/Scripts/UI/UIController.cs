@@ -9,12 +9,12 @@ public class UIController : MonoBehaviour
 	[SerializeField] GameObject onlineUsersList, onlineUsersMenuGameObject, recentPlayersList, loginMenu, lobbyMenu, waitingSign, PopUpPrefab, PlayerHost;
 	[SerializeField] List<GameObject> Players;
 	[SerializeField] List<Message> messageList = new List<Message>();
-	ServerPetitions serverPetitions;
+	[SerializeField] ServerPetitions serverPetitions;
 	public GameObject chatPanel, textObject;
 	public TMP_InputField chatBox;
 	string[] onlineUsersContent, recentPlayersContent;
-	string popUpText, Grouptext;
-	bool display, popupDisplay, updateGroup;
+	string popUpText, Grouptext, newMSG;
+	bool display, popupDisplay, updateGroup, chatUpdate;
 	public int maxMessages = 25;
 	public Color playerMessage, infoMessage;
 
@@ -25,6 +25,7 @@ public class UIController : MonoBehaviour
 		error = false;
 		popupDisplay = false;
 		updateGroup = false;
+		chatUpdate = false;
 		loginMenu.SetActive(true);
 		lobbyMenu.SetActive(false);
 		showOnlineUsersMenu = false;
@@ -65,12 +66,17 @@ public class UIController : MonoBehaviour
 			MakeGroup();
 			updateGroup = false;
 		}
+		if (chatUpdate)
+        {
+			PrepareChatMSG();
+			chatUpdate = false;
+		}
 		if (chatBox.text != "")
 		{
 			if (Input.GetKeyDown(KeyCode.Return))
 			{
-				SendMessageToChat(PlayerData.pData.playerName + ": " + chatBox.text, Message.MessageType.playerMessage);
-				chatBox.text = "";
+				serverPetitions.MessageToServer("1/"+PlayerData.pData.playerName + ": " + chatBox.text);
+				chatBox.text = "";			
 			}
 			else
 			{
@@ -117,6 +123,26 @@ public class UIController : MonoBehaviour
 				break;
 		}
 		return color;
+	}
+
+	public void MessageWaiting(string text)
+    {
+		newMSG = text;
+		chatUpdate = true;
+	}
+
+	private void PrepareChatMSG()
+    {
+		string[] parts = newMSG.Split(new[] { '/' }, 2);
+		int num = Convert.ToInt32(parts[0]);
+		switch (num){
+		case 1://General Chat
+				SendMessageToChat(parts[1], Message.MessageType.playerMessage);
+			break;
+		case 2:
+			break;
+		}
+
 	}
 
 	bool showOnlineUsersMenu;

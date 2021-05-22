@@ -14,18 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SimpleSelectedItems:
     m_Keys:
-    - Assets/Scenes/MainMenu.unity
-    - Assets/Scripts/PlayerData.cs.meta
-    - Assets/Scripts/ServerController.cs
-    - Assets/Scripts/ServerController.cs.meta
-    - Assets/Scripts/UIInviteToPartyButton.cs.meta
-    - Assets/Scripts/UIPlayerSelectButton.cs.meta
-    - Assets/V5wip.c
-    - Assets/V5wip.c.meta
     - 
-    m_Values: 010101010101010101
+    m_Values: 01
   RevisionSummary: 
   ChangesSearchValue: 
-  SelectedHistoryRevision: 
+  SelectedHistoryRevision: aa0381bebc8ae2e710f89d84a7603735f7ef3625
   HistoryPageNumber: 0
-  TabIndex: 0
+  TabIndex: 1

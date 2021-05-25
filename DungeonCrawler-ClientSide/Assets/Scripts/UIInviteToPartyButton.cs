@@ -13,6 +13,6 @@ public class UIInviteToPartyButton : MonoBehaviour
 	
 	public void InviteToParty()
 	{
-		server.Invite(targetUsername.text);
+		ServerController.server.Ask($"2/{targetUsername.text}");
 	}
 }

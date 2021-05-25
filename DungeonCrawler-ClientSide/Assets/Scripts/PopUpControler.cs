@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 public class PopUpControler : MonoBehaviour
 {
-    ServerPetitions serverPetitions;
+    //ServerPetitions serverPetitions;
     [SerializeField] Button ButtonYes;
     [SerializeField] Button ButtonNO;
     [SerializeField] TextMeshProUGUI displayText;
@@ -14,8 +14,7 @@ public class PopUpControler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        serverPetitions = FindObjectOfType<ServerPetitions>();
-        displayText.text = "You have Recived an invite from " + popUpName;
+        displayText.text = $"{popUpName} te ha invitado a su grupo";
     }
     public void PopUpClose()
     {
@@ -23,10 +22,10 @@ public class PopUpControler : MonoBehaviour
     }
     public void AnswerYes()
 	{
-        serverPetitions.AnwserInviteYes(popUpName);
+       // serverPetitions.AnwserInviteYes(popUpName);
 	}
     public void AnswerNo()
 	{
-        serverPetitions.AnwserInviteNo(popUpName);
+        //serverPetitions.AnwserInviteNo(popUpName);
 	}
 }

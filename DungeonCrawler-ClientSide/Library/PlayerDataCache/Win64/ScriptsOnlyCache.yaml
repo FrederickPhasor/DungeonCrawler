@@ -7,6 +7,8 @@ ScriptsOnlyBuild:
     - ServerPetitions
     - UIController
     - UIInviteToPartyButton
+    - UILobbyMenu
+    - UILogInMenu
     - UIPlayerSelectButton
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
@@ -35,6 +37,12 @@ ScriptsOnlyBuild:
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
     - TMPro.TextMeshProUGUI
+    UnityEditor.Graphs.dll:
+    - UnityEditor.Graphs.AnimationBlendTree.Graph
+    - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.Graph
+    - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -83,51 +91,55 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1638}
     - Class: 114
-      Script: {instanceID: 1784}
+      Script: {instanceID: 1788}
     - Class: 114
-      Script: {instanceID: 2092}
+      Script: {instanceID: 1988}
     - Class: 114
-      Script: {instanceID: 2470}
+      Script: {instanceID: 2098}
     - Class: 114
-      Script: {instanceID: 2616}
+      Script: {instanceID: 2478}
     - Class: 114
-      Script: {instanceID: 2658}
+      Script: {instanceID: 2626}
     - Class: 114
-      Script: {instanceID: 2786}
+      Script: {instanceID: 2670}
     - Class: 114
-      Script: {instanceID: 2996}
+      Script: {instanceID: 2798}
     - Class: 114
-      Script: {instanceID: 3004}
+      Script: {instanceID: 2928}
     - Class: 114
-      Script: {instanceID: 3098}
+      Script: {instanceID: 3010}
     - Class: 114
-      Script: {instanceID: 3130}
+      Script: {instanceID: 3018}
     - Class: 114
-      Script: {instanceID: 3234}
+      Script: {instanceID: 3112}
     - Class: 114
-      Script: {instanceID: 3296}
+      Script: {instanceID: 3118}
     - Class: 114
-      Script: {instanceID: 3392}
+      Script: {instanceID: 3146}
     - Class: 114
-      Script: {instanceID: 3438}
+      Script: {instanceID: 3250}
     - Class: 114
-      Script: {instanceID: 3960}
+      Script: {instanceID: 3312}
     - Class: 114
-      Script: {instanceID: 3986}
+      Script: {instanceID: 3412}
     - Class: 114
-      Script: {instanceID: 4140}
+      Script: {instanceID: 3458}
     - Class: 114
-      Script: {instanceID: 4216}
+      Script: {instanceID: 3982}
     - Class: 114
-      Script: {instanceID: 4236}
+      Script: {instanceID: 4008}
     - Class: 114
-      Script: {instanceID: 4564}
+      Script: {instanceID: 4162}
     - Class: 114
-      Script: {instanceID: 4982}
+      Script: {instanceID: 4238}
     - Class: 114
-      Script: {instanceID: 21270}
+      Script: {instanceID: 4258}
     - Class: 114
-      Script: {instanceID: 25734}
+      Script: {instanceID: 4264}
+    - Class: 114
+      Script: {instanceID: 4590}
+    - Class: 114
+      Script: {instanceID: 5016}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -165,7 +177,7 @@ ScriptsOnlyBuild:
     className: TMP_InputField
   - hash:
       serializedVersion: 2
-      Hash: 787e316ea12abbff1b9c2167335ac415
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ServerPetitions
@@ -237,6 +249,12 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
+      Hash: 5d9ab59cae9c5a18f55572875f502ac7
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UILogInMenu
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -289,6 +307,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: CanvasScaler
+  - hash:
+      serializedVersion: 2
+      Hash: 2b22f8ed4fcd9d21ab5c9eb59fca7ea0
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TeamController
   - hash:
       serializedVersion: 2
       Hash: cf9f5cf2c3145a37ac07f00e50e460f9
@@ -369,6 +393,12 @@ ScriptsOnlyBuild:
     className: TestResultRendererCallback
   - hash:
       serializedVersion: 2
+      Hash: ba1b89e6331fa16f238d2b4bb52f374c
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UIInviteToPartyButton
+  - hash:
+      serializedVersion: 2
       Hash: 748dd2a2a28da4e618912da5ac45684b
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -411,13 +441,19 @@ ScriptsOnlyBuild:
     className: Button
   - hash:
       serializedVersion: 2
+      Hash: 272d9518ac7ac4c33eb3719066318b7a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UILobbyMenu
+  - hash:
+      serializedVersion: 2
       Hash: 349d08daa6108b9a28f8c38fd40ce96f
     assemblyName: Unity.2D.SpriteShape.Runtime.dll
     namespaceName: UnityEngine.U2D
     className: SpriteShapeController
   - hash:
       serializedVersion: 2
-      Hash: c4ac0c2c4ef04bf1b3d6b398a9131af1
+      Hash: 64d05b96a8a7e2ab7d10be6366dbae56
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIController
@@ -429,7 +465,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: 1e084832f2761c76fb3bf90ac958e97a
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ServerController
@@ -561,7 +597,7 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
-      Hash: 776c1acddd3c4115e7276536100919e4
+      Hash: 88f744eae988cf5b316d52d27a4245ae
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerData
@@ -627,6 +663,12 @@ ScriptsOnlyBuild:
     className: TMP_Settings
   - hash:
       serializedVersion: 2
+      Hash: 8cf268e32344de81c4230de849ded369
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UIPlayerSelectButton
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.2D.Animation.Runtime.dll
     namespaceName: UnityEngine.U2D.Animation
@@ -657,10 +699,28 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAsset
   - hash:
       serializedVersion: 2
+      Hash: 2ae4074475f3a8a0da75408284b1fa15
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ChatController
+  - hash:
+      serializedVersion: 2
       Hash: e7a73f5f78ba6445195ec23b74a1ce2d
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_ScrollbarEventHandler
+  - hash:
+      serializedVersion: 2
+      Hash: f0670a88ff9c316b8a15315861ac1643
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UIHostCell
+  - hash:
+      serializedVersion: 2
+      Hash: d0d3d835791a647068f93d04aff36386
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayerController
   - hash:
       serializedVersion: 2
       Hash: 8220b46879dc5e37db1b940c938f5744
@@ -691,18 +751,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.2D.IK.Runtime.dll
     namespaceName: UnityEngine.U2D.IK
     className: FabrikSolver2D
-  - hash:
-      serializedVersion: 2
-      Hash: 8cf268e32344de81c4230de849ded369
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: UIPlayerSelectButton
-  - hash:
-      serializedVersion: 2
-      Hash: ba1b89e6331fa16f238d2b4bb52f374c
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: UIInviteToPartyButton
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainMenu.unity

@@ -52,8 +52,12 @@ public class ServerController : MonoBehaviour
 	}
 	public void Ask(string message)
 	{
-		if(socket.Connected)
+		if (socket.Connected)
+		{
+			Debug.Log("Vamos a mandar " + message);
 			socket.Send(System.Text.Encoding.ASCII.GetBytes(message));
+
+		}
 	}
 	void ListenForServer()
 	{

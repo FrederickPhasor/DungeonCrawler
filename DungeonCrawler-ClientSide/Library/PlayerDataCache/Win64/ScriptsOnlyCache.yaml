@@ -1,22 +1,28 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - ChatController
     - PlayerData
     - PopUpControler
     - ServerController
     - ServerPetitions
-    - UIController
+    - UIConnectedPlayersMenu
+    - UIHostCell
     - UIInviteToPartyButton
     - UILobbyMenu
     - UILogInMenu
     - UIPlayerSelectButton
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
+    Unity.2D.Animation.Runtime.dll:
+    - UnityEngine.U2D.Animation.SpriteSkin
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
     - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
+    - UnityEngine.U2D.IK.IKManager2D
+    - UnityEngine.U2D.IK.LimbSolver2D
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
     - UnityEditor.Tilemaps.GridPaletteBrushes
@@ -58,6 +64,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Image
     - UnityEngine.UI.LayoutElement
     - UnityEngine.UI.Mask
+    - UnityEngine.UI.RawImage
     - UnityEngine.UI.RectMask2D
     - UnityEngine.UI.ScrollRect
     - UnityEngine.UI.Scrollbar
@@ -78,7 +85,15 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 49
       Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
     - Class: 81
+      Script: {instanceID: 0}
+    - Class: 84
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -89,21 +104,31 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1574}
     - Class: 114
-      Script: {instanceID: 1638}
+      Script: {instanceID: 1576}
     - Class: 114
-      Script: {instanceID: 1788}
+      Script: {instanceID: 1640}
     - Class: 114
-      Script: {instanceID: 1988}
+      Script: {instanceID: 1786}
     - Class: 114
-      Script: {instanceID: 2098}
+      Script: {instanceID: 1964}
     - Class: 114
-      Script: {instanceID: 2478}
+      Script: {instanceID: 1990}
     - Class: 114
-      Script: {instanceID: 2626}
+      Script: {instanceID: 2102}
+    - Class: 114
+      Script: {instanceID: 2264}
+    - Class: 114
+      Script: {instanceID: 2320}
+    - Class: 114
+      Script: {instanceID: 2480}
+    - Class: 114
+      Script: {instanceID: 2628}
     - Class: 114
       Script: {instanceID: 2670}
     - Class: 114
       Script: {instanceID: 2798}
+    - Class: 114
+      Script: {instanceID: 2870}
     - Class: 114
       Script: {instanceID: 2928}
     - Class: 114
@@ -115,31 +140,33 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3118}
     - Class: 114
-      Script: {instanceID: 3146}
-    - Class: 114
       Script: {instanceID: 3250}
     - Class: 114
       Script: {instanceID: 3312}
     - Class: 114
-      Script: {instanceID: 3412}
+      Script: {instanceID: 3408}
     - Class: 114
-      Script: {instanceID: 3458}
+      Script: {instanceID: 3454}
     - Class: 114
-      Script: {instanceID: 3982}
+      Script: {instanceID: 3976}
     - Class: 114
-      Script: {instanceID: 4008}
+      Script: {instanceID: 4002}
     - Class: 114
-      Script: {instanceID: 4162}
+      Script: {instanceID: 4156}
     - Class: 114
-      Script: {instanceID: 4238}
+      Script: {instanceID: 4232}
+    - Class: 114
+      Script: {instanceID: 4252}
     - Class: 114
       Script: {instanceID: 4258}
     - Class: 114
-      Script: {instanceID: 4264}
+      Script: {instanceID: 4582}
     - Class: 114
-      Script: {instanceID: 4590}
+      Script: {instanceID: 4592}
     - Class: 114
-      Script: {instanceID: 5016}
+      Script: {instanceID: 4672}
+    - Class: 114
+      Script: {instanceID: 5006}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -147,6 +174,8 @@ ScriptsOnlyBuild:
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 212
       Script: {instanceID: 0}
     - Class: 213
       Script: {instanceID: 0}
@@ -249,6 +278,12 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
+      Hash: 8369575b43ca560c8b87636192085a89
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: UIConnectedPlayersMenu
+  - hash:
+      serializedVersion: 2
       Hash: 5d9ab59cae9c5a18f55572875f502ac7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
@@ -259,6 +294,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: GroupTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 7f831e99a5252cbab97a333a89c0322e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MapController
   - hash:
       serializedVersion: 2
       Hash: d791aa6007fa3640be1164ea75bb087d
@@ -393,7 +434,7 @@ ScriptsOnlyBuild:
     className: TestResultRendererCallback
   - hash:
       serializedVersion: 2
-      Hash: ba1b89e6331fa16f238d2b4bb52f374c
+      Hash: 8ccbe96fb5286cce933c2ace308ec1e7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIInviteToPartyButton
@@ -441,7 +482,7 @@ ScriptsOnlyBuild:
     className: Button
   - hash:
       serializedVersion: 2
-      Hash: 272d9518ac7ac4c33eb3719066318b7a
+      Hash: 1c26e19183b95521b765cdb31465e9de
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UILobbyMenu
@@ -597,7 +638,7 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
-      Hash: 88f744eae988cf5b316d52d27a4245ae
+      Hash: d5656c80dd89440939b3a794f76fa94a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerData
@@ -699,7 +740,7 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAsset
   - hash:
       serializedVersion: 2
-      Hash: 2ae4074475f3a8a0da75408284b1fa15
+      Hash: f4021ec2a78abff032896cfb39c8cf65
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ChatController
@@ -711,7 +752,7 @@ ScriptsOnlyBuild:
     className: TMP_ScrollbarEventHandler
   - hash:
       serializedVersion: 2
-      Hash: f0670a88ff9c316b8a15315861ac1643
+      Hash: d136042f110c24cbb5080d2200d79db7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIHostCell

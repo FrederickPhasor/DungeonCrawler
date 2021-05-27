@@ -7,9 +7,15 @@ public  class PlayerData : MonoBehaviour
     public static PlayerData pData;
     string playerName;
     public  bool isLeader;
-     void Awake()
+    public bool inGame;
+	private void Update()
+	{
+    }
+	void Awake()
     {
+        playerName = "OfflineName";
         isLeader = true;
+        inGame = false;
         if (pData != null)
             GameObject.Destroy(pData);
         else
@@ -20,7 +26,8 @@ public  class PlayerData : MonoBehaviour
 	{
         return playerName;
 	}
-    public void SetName(string username)
+	
+	public void SetName(string username)
 	{
         playerName = username;
 	}

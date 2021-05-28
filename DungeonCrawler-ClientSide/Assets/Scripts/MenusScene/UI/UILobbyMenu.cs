@@ -14,90 +14,114 @@ public class UILobbyMenu : MonoBehaviour
 	[Header("Pop Up")]
 	[SerializeField] GameObject popUpPrefab;
 	string whoInvitedUsName;
-	string  partnerNamesRaw;
+	string  partnerName;
+	int add;
+	bool partnersUpdate;
 	bool display;
 	private void Start()
 	{
 		LobbyMenuGameObject.SetActive(false);
-		partnersUpdated = false;
+		add = 0;
+		partnersUpdate = false;
+		dissolve = false;
 		display = false;
 		LobbyButton();
 	}
 	private void OnEnable()
 	{
-		ServerController.PartnersUpdateEvent += SetPartnersNames;
+		ServerController.ModifyPartner += TriggerPartnerUpdate;
 		ServerController.InvitationReceivedEvent += TriggerInvitationPopUp;
+		ServerController.GroupDissolvedEvent += TriggerDissolve;
 	}
 	private void OnDisable()
 	{
-		ServerController.PartnersUpdateEvent -= SetPartnersNames;
+		ServerController.ModifyPartner -= TriggerPartnerUpdate;
 		ServerController.InvitationReceivedEvent -= TriggerInvitationPopUp;
+		ServerController.GroupDissolvedEvent -= TriggerDissolve;
 	}
 	private void Update()
 	{
-		if (partnersUpdated)
-		{
-			MakeGroup();
-			partnersUpdated = false;
-		}
 		if (display)
 		{
 			PopUpApear();
 			display = false;
 		}
+		if (dissolve)
+		{
+			DissolveGroup();
+			dissolve = false;
+			return;
+		}
+		if (partnersUpdate)
+		{
+			if (add == 1)
+			{
+				AddAPartner();
+			}
+			else
+			{
+				DeletePartner();
+			}
+			
+			partnersUpdate = false;
+		}
+		
 	}
-	void SetPartnersNames(string names)
+	void TriggerPartnerUpdate(int op, string name)
 	{
-		partnerNamesRaw = names;
-		Debug.Log(names);
-		partnersUpdated = true;
+		partnerName = name;
+		add = op;
+		partnersUpdate = true;
 	}
 	void TriggerInvitationPopUp(string originUsername)
 	{
 		whoInvitedUsName = originUsername;
 		display = true;
 	}
+	bool dissolve;
+	void TriggerDissolve()
+	{
+		dissolve = true;
+	}
 	public void PopUpApear()
 	{
 		GameObject newPopUp = Instantiate(popUpPrefab, LobbyMenuGameObject.transform);
 		newPopUp.GetComponent<PopUpControler>().popUpName = whoInvitedUsName;
 	}
-	bool partnersUpdated;
-	public string[] namesLOG;
-	public void MakeGroup()
+	void DeletePartner()
 	{
-		string[] names = partnerNamesRaw.Split('/');
-		
-		if (names[0] == "EMPTY")
+		Debug.Log("We are going to delete a user  : "+ partnerName);
+		foreach (GameObject player in Players)
 		{
-			foreach (GameObject player in Players)
+			if (player.activeInHierarchy)
 			{
-				player.SetActive(false);
+				print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+				print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName);
+				if (player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName)
+				{
+					Debug.Log("We foud the guy");
+					player.SetActive(false);
+				}
 			}
 		}
-		else
+	}
+	public void AddAPartner()
+	{
+		foreach (GameObject player in Players)
 		{
-			int removeIndex = Array.IndexOf(names, PlayerData.pData.GetName());
-			string[] UpdatedNames = new string[names.Length - 1];
-			for (int i = 0, j = 0; i < UpdatedNames.Length; i++, j++)
+			if (player.activeInHierarchy == false)
 			{
-				if (i == removeIndex)
-				{
-					j++;
-				}
-				UpdatedNames[i] = names[j];
+				player.SetActive(true);
+				player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = partnerName;
+				return;
 			}
-			names = UpdatedNames;
-			namesLOG = names;
-			foreach (GameObject player in Players)
-			{
-				player.SetActive(false);
-			}
-			for (int i = 0; i < names.Length - 1; i++)
-			{
-				Players[i].SetActive(true);
-				Players[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = names[i];
-			}
+		}
+	}
+	void DissolveGroup()
+	{
+		foreach (GameObject player in Players)
+		{
+			player.SetActive(false);
 		}
 	}
 	public void GoBackButton()

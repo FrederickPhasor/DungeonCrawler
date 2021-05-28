@@ -5,14 +5,17 @@ using TMPro;
 
 public class UIConnectedPlayersMenu : MonoBehaviour
 {
-	string[] onlineUsersContent;
+	List<string> connectedPlayersList;
 	int currentPage;
 	bool updated;
+	int operation;
+	string username;
 	[SerializeField] GameObject onlineUsersList;
 	[SerializeField] GameObject nextPageButton, previousPageButton;
 	private void Start()
 	{
 		currentPage = 0;
+		connectedPlayersList = new List<string>();
 	}
 	private void OnEnable()
 	{
@@ -22,22 +25,33 @@ public class UIConnectedPlayersMenu : MonoBehaviour
 	{
 		ServerController.OnlineUsersUpdatedEvent -= TriggerOnlineUsersUpdate;
 	}
-	void TriggerOnlineUsersUpdate(string connectedPlayersString)
+	void TriggerOnlineUsersUpdate(int op, string playerName)
 	{
-		onlineUsersContent = connectedPlayersString.Split('/');
+		username = playerName;
+
+		operation = op;
+
 		updated = true;
 	}
 	private void Update()
 	{
 		if (updated)
 		{
+			if(operation == 1)
+			{
+				connectedPlayersList.Add(username);
+			}
+			else
+			{
+				connectedPlayersList.Remove(username);
+			}
 			if (currentPage == 0)
 			{
 				previousPageButton.SetActive(false);
 			}
 			else
 				previousPageButton.SetActive(true);
-			if (onlineUsersContent.Length > onlineUsersList.transform.childCount && Mathf.Abs((currentPage * onlineUsersList.transform.childCount) - onlineUsersContent.Length) > onlineUsersList.transform.childCount)
+			if (connectedPlayersList.Count > onlineUsersList.transform.childCount && Mathf.Abs((currentPage * onlineUsersList.transform.childCount) - connectedPlayersList.Count) > onlineUsersList.transform.childCount)
 			{
 				nextPageButton.SetActive(true);
 			}
@@ -46,9 +60,6 @@ public class UIConnectedPlayersMenu : MonoBehaviour
 			DisplayOnlineUsers();
 			updated = false;
 		}
-
-		
-		
 	}
 	public void GoNextPage()
 	{
@@ -61,23 +72,23 @@ public class UIConnectedPlayersMenu : MonoBehaviour
 	private void DisplayOnlineUsers()
 	{
 		int numberToDisplay;
-		numberToDisplay = onlineUsersContent.Length - 1 <= onlineUsersList.transform.childCount ? onlineUsersContent.Length - 1 : onlineUsersList.transform.childCount;
-		if(onlineUsersContent.Length - 1 <= onlineUsersList.transform.childCount)
-		{
-			numberToDisplay = onlineUsersContent.Length - 1;
-		}
-		else
+		if(connectedPlayersList.Count  >= onlineUsersList.transform.childCount)
 		{
 			numberToDisplay = onlineUsersList.transform.childCount;
 		}
+		else
+		{
+			numberToDisplay = connectedPlayersList.Count;
+		}
+		Debug.Log("Number to display is : " + numberToDisplay);
 		for (int i = 0; i < numberToDisplay; i++)
 		{
 			onlineUsersList.transform.GetChild(i).gameObject.SetActive(true);
-			onlineUsersList.transform.GetChild(i).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = onlineUsersContent[i + currentPage * onlineUsersList.transform.childCount];
+			onlineUsersList.transform.GetChild(i).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = connectedPlayersList[i + currentPage * onlineUsersList.transform.childCount];
 		}
-		for (int j = 0; j < onlineUsersList.transform.childCount - numberToDisplay; j++)
-		{
-			onlineUsersList.transform.GetChild(numberToDisplay + j).gameObject.SetActive(false);
-		}
+		//for (int j = 0; j < onlineUsersList.transform.childCount - numberToDisplay; j++)
+		//{
+		//	onlineUsersList.transform.GetChild(numberToDisplay + j).gameObject.SetActive(false);
+		//}
 	}
 }

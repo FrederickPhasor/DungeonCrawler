@@ -14,14 +14,18 @@ public class ServerController : MonoBehaviour
 	bool waitingForServer, loggedIn;
 	public delegate void SignInSucess();
 	public static event SignInSucess SignedInEvent;
-	public delegate void OnlineUsersUpdate(string playerList);
-	public static event OnlineUsersUpdate PartnersUpdateEvent;
 	public delegate void InvitationToPlayReceived(string whoInvitedUsName);
 	public static event InvitationToPlayReceived InvitationReceivedEvent;
-	public delegate void OnlineUsersUpdated(string connectedPlayers);
-	public static event OnlineUsersUpdated OnlineUsersUpdatedEvent;
+	
 	public delegate void NewMessageReceived(string msg);
 	public static event NewMessageReceived NewMessageReceivedEvent;
+
+	public delegate void GroupDissolved();
+	public static event GroupDissolved GroupDissolvedEvent;
+	public delegate void ModifyPartners(int op, string name);
+	public static event ModifyPartners ModifyPartner;
+	public delegate void OnlineUsersUpdated(int op, string name);
+	public static event OnlineUsersUpdated OnlineUsersUpdatedEvent;
 
 	void Start()
 	{
@@ -44,20 +48,27 @@ public class ServerController : MonoBehaviour
 		}
 		
 	}
+	private void OnApplicationQuit()
+	{
+		Ask("-1/");
+	}
 	public void DisconnectFromServer()
 	{
+		socket.Close();
 		listenForServer.Abort();
 		socket.Shutdown(SocketShutdown.Both);
-		socket.Close();
 	}
 	public void Ask(string message)
 	{
-		if (socket.Connected)
+		if(socket != null)
 		{
-			Debug.Log("Vamos a mandar " + message);
-			socket.Send(System.Text.Encoding.ASCII.GetBytes(message));
-
+			if (socket.Connected)
+			{
+				Debug.Log("Vamos a mandar: " + message);
+				socket.Send(System.Text.Encoding.ASCII.GetBytes(message));
+			}
 		}
+		
 	}
 	void ListenForServer()
 	{
@@ -67,6 +78,7 @@ public class ServerController : MonoBehaviour
 			socket.Receive(rawAnswer);
 			waitingForServer = false;
 			string[] parts = System.Text.Encoding.ASCII.GetString(rawAnswer).Split(new[] { '/' }, 2);
+			Debug.Log("We received : " + System.Text.Encoding.ASCII.GetString(rawAnswer));
 			int num;
 			try
 			{
@@ -78,32 +90,37 @@ public class ServerController : MonoBehaviour
 			}
 			switch (num)
 			{
-				case 1://sign in
+				case 1://sign in result
 					int res = Convert.ToInt32(parts[1]);
-					if (res == 0)
+					if (res == 1)
 					{
 						SignedInEvent();
 					}
+					else
+					{
+						//Show the player loggin has failed
+					}
 					break;
-				case 2://online users updated
-					OnlineUsersUpdatedEvent(parts[1]);
+				case 2://Receive invitation to group
+					InvitationReceivedEvent(parts[1]);//This should be the username of who invited us
 					break;
-				case 3: //nos han invitado
-					InvitationReceivedEvent(parts[1]);
+				case 3: //You could now join group or someone could not join to you!
+				
 					break;
 				case 4://Grupo actualizado
-					Debug.Log("Recibido Group Update" + parts[1]);
-					PartnersUpdateEvent(parts[1]);
-					//UI.MakeGroupWaiting(parts[1]);
-					// 8/nombre1/nombre2/etc 
+					
 					break;
-				case 5://Message recived MsgType/msg
-					Debug.Log("Recibido message" + parts[1]);
-					NewMessageReceivedEvent(parts[1]);
+				case 5://Group you were on was dissolved
+					GroupDissolvedEvent();
+
 					break;
-				case 6: //Asignación lider 
+				case 6: //Add or remove user from connected list
+					string[] subparts = parts[1].Split(new[] { '/' }, 2);
+					OnlineUsersUpdatedEvent(Convert.ToInt32(subparts[0]), subparts[1]);
 					break;
-				case 7: //Mover el equipo
+				case 7: //Add or remove a partner
+					string[] subparts2 = parts[1].Split(new[] { '/' }, 2);
+					ModifyPartner(Convert.ToInt32(subparts2[0]), subparts2[1]);
 					break;
 				case 8: //Error al enviar mensaje privado
 					

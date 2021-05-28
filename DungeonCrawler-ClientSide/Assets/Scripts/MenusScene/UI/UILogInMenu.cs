@@ -19,8 +19,8 @@ public class UILogInMenu : MonoBehaviour
 	{
 		LogInMenuGameObject.SetActive(true);
 		signIn = false;
-		IPAddress.text = "192.168.56.102";
-		PORT.text = "9092";
+		IPAddress.text = "192.168.56.103";
+		PORT.text = "9093";
 	}
 	private void Update()
 	{
@@ -43,7 +43,7 @@ public class UILogInMenu : MonoBehaviour
 	}
 	public void SignInAttemp()
 	{
-        ServerController.server.Ask($"1/{username.text}/{password.text}/");
+        ServerController.server.Ask($"1/{username.text}/{password.text}");
 	}
     public void AttemptConnectionToServer()
 	{

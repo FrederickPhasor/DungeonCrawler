@@ -29,15 +29,10 @@ public class ChatController : MonoBehaviour
 	public string helpMessage;
 	private void Update()
 	{
-		if (chatUpdate)
-		{
-			ReceiveMessage();
-			chatUpdate = false;
-		}
 		if (Input.GetKeyDown(KeyCode.Return))
 		{
 			string[] parts = chatInputBox.text.Split(new[] { ' ' }, 2);
-			string serverMsg = null;
+			string serverMsg;
 			if (parts[0] == "/help" || parts[0] == "/h") //local
 			{
 				SendMessageToChat(helpMessage, Message.MessageType.localInfoMessage);
@@ -66,6 +61,11 @@ public class ChatController : MonoBehaviour
 			}
 			ServerController.server.Ask(serverMsg);
 			chatInputBox.text = "";
+		}
+		if (chatUpdate)
+		{
+			ReceiveMessage();
+			chatUpdate = false;
 		}
 	}
 	private void OnEnable()
@@ -104,13 +104,15 @@ private void ReceiveMessage()
 	switch (num)
 	{
 		case 1://General chat, only people that is not playing
-			SendMessageToChat(parts[1], Message.MessageType.inGameGlobalMessage);
-			break;
+			
+				string[] parts2 = parts[1].Split(new[] { '/' }, 2);
+				SendMessageToChat(parts2[0] + ": "+parts2[1], Message.MessageType.inGameGlobalMessage);
+				break;
 		case 2:
 			break;
 		case 3: //groupchatting
-				string[] parts2 = parts[1].Split(new[] { '/' }, 2);
-				SendMessageToChat(parts2[0] + ": " + parts2[1],Message.MessageType.groupMessage);
+				//string[] parts2 = parts[1].Split(new[] { '/' }, 2);
+				//SendMessageToChat(parts2[0] + ": " + parts2[1],Message.MessageType.groupMessage);
 			break;
 	}
 }

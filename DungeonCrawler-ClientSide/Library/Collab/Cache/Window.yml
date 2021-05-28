@@ -14,9 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SimpleSelectedItems:
     m_Keys:
+    - Assets/Scenes/GameScene.unity
+    - Assets/Scenes/MainMenu.unity
+    - Assets/Scripts/ChatController.cs
+    - Assets/Scripts/MenusScene/UI/UIConnectedPlayersMenu.cs
+    - Assets/Scripts/MenusScene/UI/UILobbyMenu.cs
+    - Assets/Scripts/MenusScene/UI/UILogInMenu.cs
+    - Assets/Scripts/Server/ServerController.cs
+    - Assets/Scripts/UI/UIController.cs
+    - Assets/Scripts/UI/UIController.cs.meta
     - 
-    m_Values: 01
-  RevisionSummary: 'Casi estable '
+    m_Values: 00000000000000000000
+  RevisionSummary: 
   ChangesSearchValue: 
   SelectedHistoryRevision: 
   HistoryPageNumber: 0

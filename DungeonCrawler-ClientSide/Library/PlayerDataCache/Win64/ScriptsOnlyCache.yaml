@@ -31,9 +31,6 @@ ScriptsOnlyBuild:
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
     - UnityEditor.Tilemaps.TilemapPrefabStageHelper
-    Unity.CollabProxy.Editor.dll:
-    - Unity.Cloud.Collaborate.UserInterface.CollaborateWindow
-    - Unity.Cloud.Collaborate.UserInterface.WindowCache
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro.dll:
@@ -43,12 +40,6 @@ ScriptsOnlyBuild:
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
     - TMPro.TextMeshProUGUI
-    UnityEditor.Graphs.dll:
-    - UnityEditor.Graphs.AnimationBlendTree.Graph
-    - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.Graph
-    - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -140,33 +131,33 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3118}
     - Class: 114
-      Script: {instanceID: 3250}
+      Script: {instanceID: 3248}
     - Class: 114
-      Script: {instanceID: 3312}
+      Script: {instanceID: 3310}
     - Class: 114
-      Script: {instanceID: 3408}
+      Script: {instanceID: 3406}
     - Class: 114
-      Script: {instanceID: 3454}
+      Script: {instanceID: 3452}
     - Class: 114
-      Script: {instanceID: 3976}
+      Script: {instanceID: 3974}
     - Class: 114
-      Script: {instanceID: 4002}
+      Script: {instanceID: 4000}
     - Class: 114
-      Script: {instanceID: 4156}
+      Script: {instanceID: 4154}
     - Class: 114
-      Script: {instanceID: 4232}
+      Script: {instanceID: 4230}
     - Class: 114
-      Script: {instanceID: 4252}
+      Script: {instanceID: 4250}
     - Class: 114
-      Script: {instanceID: 4258}
+      Script: {instanceID: 4256}
     - Class: 114
-      Script: {instanceID: 4582}
+      Script: {instanceID: 4580}
     - Class: 114
-      Script: {instanceID: 4592}
+      Script: {instanceID: 4590}
     - Class: 114
-      Script: {instanceID: 4672}
+      Script: {instanceID: 4670}
     - Class: 114
-      Script: {instanceID: 5006}
+      Script: {instanceID: 5004}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -482,7 +473,7 @@ ScriptsOnlyBuild:
     className: Button
   - hash:
       serializedVersion: 2
-      Hash: 1c26e19183b95521b765cdb31465e9de
+      Hash: 272d9518ac7ac4c33eb3719066318b7a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UILobbyMenu
@@ -492,12 +483,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.2D.SpriteShape.Runtime.dll
     namespaceName: UnityEngine.U2D
     className: SpriteShapeController
-  - hash:
-      serializedVersion: 2
-      Hash: 64d05b96a8a7e2ab7d10be6366dbae56
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: UIController
   - hash:
       serializedVersion: 2
       Hash: 4fd8bf02e3089425d3502e26c44ba31a
@@ -795,4 +780,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainMenu.unity
-  playerPath: C:/UnityProjectsUni/Builds/v5Build/DungeonCrawler-ClientSide.exe
+  playerPath: C:/UnityProjectsUni/Builds/ParanoidBuild/DungeonCrawler-ClientSide.exe

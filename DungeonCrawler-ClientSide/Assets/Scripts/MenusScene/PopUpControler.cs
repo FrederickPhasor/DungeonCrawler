@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 public class PopUpControler : MonoBehaviour
 {
-    //ServerPetitions serverPetitions;
+  
     [SerializeField] Button ButtonYes;
     [SerializeField] Button ButtonNO;
     [SerializeField] TextMeshProUGUI displayText;
@@ -16,16 +16,19 @@ public class PopUpControler : MonoBehaviour
     {
         displayText.text = "Te ha invitado a jugar : " + popUpName;
     }
-    public void PopUpClose()
-    {
-        Destroy(this.gameObject);
-    }
     public void AnswerYes()
 	{
         ServerController.server.Ask($"3/Y/{popUpName}");
-	}
+        PopUpClose();
+
+    }
     public void AnswerNo()
 	{
         ServerController.server.Ask($"3/N/{popUpName}");
+        PopUpClose();
+    }
+    public void PopUpClose()
+    {
+        Destroy(this.gameObject);
     }
 }

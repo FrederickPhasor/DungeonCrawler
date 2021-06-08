@@ -13,29 +13,33 @@ public class UILogInMenu : MonoBehaviour
 	[SerializeField] Image connectionIndicator;
 	[SerializeField] GameObject LobbyMenuGameObject;
 	[SerializeField] GameObject LogInMenuGameObject;
+	public delegate void ConnectionToServerStablished();
+	public static event ConnectionToServerStablished ConnectionToServerStablishedEvent;
 	bool signIn;
-	
-	private void Start()
-	{
-		LogInMenuGameObject.SetActive(true);
-		signIn = false;
-		IPAddress.text = "192.168.56.103";
-		PORT.text = "9093";
-	}
 	private void Update()
 	{
 		if (signIn)
 		{
+			Debug.Log("Loggin success");
 			PlayerData.pData.SetName(username.text);
 			PlayerData.pData.isLeader = true;
 			LobbyMenuGameObject.SetActive(true);
 			LogInMenuGameObject.SetActive(false);
+			connectionIndicator.color = Color.red;
 			signIn = false;
+			this.enabled = false;
 		}
 	}
+	
 	private void OnEnable()
 	{
+		Debug.Log("OnEnable went off");
 		ServerController.SignedInEvent += SignInSuccess;
+		connectionIndicator.color = Color.red;
+		LogInMenuGameObject.SetActive(true);
+		signIn = false;
+		IPAddress.text = "192.168.56.104";
+		PORT.text = "9093";
 	}
 	private void OnDisable()
 	{
@@ -43,15 +47,15 @@ public class UILogInMenu : MonoBehaviour
 	}
 	public void SignInAttemp()
 	{
-        ServerController.server.Ask($"1/{username.text}/{password.text}");
+        ServerController.server.Ask($"2/{username.text}/{password.text}");
 	}
     public void AttemptConnectionToServer()
 	{
-		connectionIndicator.color = Color.white;
         int result = ServerController.server.ConnectToServer(IPAddress.text, PORT.text);
 		if (result == 0)
 		{
 			connectionIndicator.color = Color.green;
+			ConnectionToServerStablishedEvent();
 		}
 		else
 		{

@@ -8,20 +8,18 @@ public class UILobbyMenu : MonoBehaviour
 {
 	[Header("References to Gameobjects")]
 	[SerializeField] GameObject LobbyMenuGameObject;
+	[SerializeField] GameObject LogInMenuGameObject;
 	[SerializeField] List<GameObject> subMenus;
 	[SerializeField] List<GameObject> Players;
 	[SerializeField] GameObject leaveGroupObject;
 	[Header("Pop Up")]
 	[SerializeField] GameObject popUpPrefab;
 	string whoInvitedUsName;
-	string  partnerName;
-	int add;
 	bool partnersUpdate;
 	bool display;
 	private void Start()
 	{
 		LobbyMenuGameObject.SetActive(false);
-		add = 0;
 		partnersUpdate = false;
 		dissolve = false;
 		display = false;
@@ -29,13 +27,13 @@ public class UILobbyMenu : MonoBehaviour
 	}
 	private void OnEnable()
 	{
-		ServerController.ModifyPartner += TriggerPartnerUpdate;
+		ServerController.ModifyPartnersEvent += TriggerPartnerUpdate;
 		ServerController.InvitationReceivedEvent += TriggerInvitationPopUp;
 		ServerController.GroupDissolvedEvent += TriggerDissolve;
 	}
 	private void OnDisable()
 	{
-		ServerController.ModifyPartner -= TriggerPartnerUpdate;
+		ServerController.ModifyPartnersEvent -= TriggerPartnerUpdate;
 		ServerController.InvitationReceivedEvent -= TriggerInvitationPopUp;
 		ServerController.GroupDissolvedEvent -= TriggerDissolve;
 	}
@@ -54,23 +52,22 @@ public class UILobbyMenu : MonoBehaviour
 		}
 		if (partnersUpdate)
 		{
-			if (add == 1)
-			{
-				AddAPartner();
-			}
-			else
-			{
-				DeletePartner();
-			}
-			
 			partnersUpdate = false;
+			DissolveGroup();
+			foreach(string partnerName in partnersNames)
+			{
+				AddAPartner(partnerName);
+			}
 		}
-		
 	}
-	void TriggerPartnerUpdate(int op, string name)
+	public List<string> partnersNames = new List<string>();
+	void TriggerPartnerUpdate(string updatedGroup)
 	{
-		partnerName = name;
-		add = op;
+		partnersNames.Clear();
+		foreach(string name in updatedGroup.Split('/'))
+		{
+				partnersNames.Add(name);
+		}
 		partnersUpdate = true;
 	}
 	void TriggerInvitationPopUp(string originUsername)
@@ -90,29 +87,29 @@ public class UILobbyMenu : MonoBehaviour
 	}
 	void DeletePartner()
 	{
-		Debug.Log("We are going to delete a user  : "+ partnerName);
-		foreach (GameObject player in Players)
-		{
-			if (player.activeInHierarchy)
-			{
-				print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-				print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName);
-				if (player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName)
-				{
-					Debug.Log("We foud the guy");
-					player.SetActive(false);
-				}
-			}
-		}
+		//Debug.Log("We are going to delete a user  : "+ partnerName);
+		//foreach (GameObject player in Players)
+		//{
+		//	if (player.activeInHierarchy)
+		//	{
+		//		print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+		//		print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName);
+		//		if (player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName)	
+		//		{
+		//			Debug.Log("We foud the guy");
+		//			player.SetActive(false);
+		//		}
+		//	}
+		//}
 	}
-	public void AddAPartner()
+	public void AddAPartner(string partnerName)
 	{
 		foreach (GameObject player in Players)
 		{
 			if (player.activeInHierarchy == false)
 			{
 				player.SetActive(true);
-				player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = partnerName;
+				player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = partnerName + "\n";
 				return;
 			}
 		}
@@ -130,6 +127,7 @@ public class UILobbyMenu : MonoBehaviour
 		{
 			menu.SetActive(false);
 		}
+		subMenus[0].SetActive(true);
 	}
 	public void SearchForGame()
 	{
@@ -174,6 +172,13 @@ public class UILobbyMenu : MonoBehaviour
 	public void SettingsButton()
 	{
 		ActivateMenu(6);
+	}
+	public void ExitButton()
+	{
+		LogInMenuGameObject.SetActive(true);
+		transform.GetComponent<UILogInMenu>().enabled = true;
+		LobbyMenuGameObject.SetActive(false);
+		this.enabled = false;
 	}
 }
 

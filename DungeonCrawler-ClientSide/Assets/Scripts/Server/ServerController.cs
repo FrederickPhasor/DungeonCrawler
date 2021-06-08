@@ -11,7 +11,6 @@ public class ServerController : MonoBehaviour
 	public static ServerController server;
 	Socket socket;
 	Thread listenForServer;
-	bool waitingForServer, loggedIn;
 	public delegate void SignInSucess();
 	public static event SignInSucess SignedInEvent;
 	public delegate void InvitationToPlayReceived(string whoInvitedUsName);
@@ -22,18 +21,31 @@ public class ServerController : MonoBehaviour
 
 	public delegate void GroupDissolved();
 	public static event GroupDissolved GroupDissolvedEvent;
-	public delegate void ModifyPartners(int op, string name);
-	public static event ModifyPartners ModifyPartner;
-	public delegate void OnlineUsersUpdated(int op, string name);
-	public static event OnlineUsersUpdated OnlineUsersUpdatedEvent;
+	public delegate void ModifyPartners(string name);
+	public static event ModifyPartners ModifyPartnersEvent;
+	public delegate void AllOnlineUserListUpdate(string names);
+	public static event AllOnlineUserListUpdate OnlineUsersUpdatedEvent;
+	public delegate void SinglePlayerUpdate(string name);
+	public static event SinglePlayerUpdate SinglePlayerConnectionStateUpdateEvent;
 
-	void Start()
+	
+	void OnEnable()
+	{
+		server = this;
+		UILogInMenu.ConnectionToServerStablishedEvent += ClearDirect;
+	}
+	private void OnDisable()
+	{
+		UILogInMenu.ConnectionToServerStablishedEvent -= ClearDirect;
+	}
+	void ClearDirect()
 	{
 		server = this;
 		listenForServer = new Thread(ListenForServer);
 	}
 	public int ConnectToServer(string IPaddress, string PORT)
 	{
+		ClearDirect();
 		IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), Int32.Parse(PORT));
 		socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		try
@@ -50,13 +62,22 @@ public class ServerController : MonoBehaviour
 	}
 	private void OnApplicationQuit()
 	{
-		Ask("-1/");
+		DisconnectFromServer();
 	}
 	public void DisconnectFromServer()
 	{
-		socket.Close();
-		listenForServer.Abort();
+		try
+		{
+			listenForServer.Abort();
+		}
+		catch
+		{
+			Debug.Log("Thread aborting was messy");
+		}
+		Ask("-1/");
 		socket.Shutdown(SocketShutdown.Both);
+		socket.Close();
+		//Application.Quit();
 	}
 	public void Ask(string message)
 	{
@@ -74,9 +95,9 @@ public class ServerController : MonoBehaviour
 	{
 		while (true)
 		{
-			byte[] rawAnswer = new byte[990];
+			Debug.Log("Waiting for server");
+			byte[] rawAnswer = new byte[1024];
 			socket.Receive(rawAnswer);
-			waitingForServer = false;
 			string[] parts = System.Text.Encoding.ASCII.GetString(rawAnswer).Split(new[] { '/' }, 2);
 			Debug.Log("We received : " + System.Text.Encoding.ASCII.GetString(rawAnswer));
 			int num;
@@ -90,41 +111,31 @@ public class ServerController : MonoBehaviour
 			}
 			switch (num)
 			{
-				case 1://sign in result
-					int res = Convert.ToInt32(parts[1]);
-					if (res == 1)
-					{
-						SignedInEvent();
-					}
-					else
-					{
-						//Show the player loggin has failed
-					}
+				case 1://Loggin answer
+					SignedInEvent();
+					OnlineUsersUpdatedEvent(parts[1]);
 					break;
 				case 2://Receive invitation to group
 					InvitationReceivedEvent(parts[1]);//This should be the username of who invited us
 					break;
-				case 3: //You could now join group or someone could not join to you!
-				
+				case 3: //Chat
+					NewMessageReceivedEvent(parts[1]);
 					break;
-				case 4://Grupo actualizado
-					
+				case 4://Add connected player 
+					   //1 if add 0 if delete
+					SinglePlayerConnectionStateUpdateEvent(parts[1]);
 					break;
-				case 5://Group you were on was dissolved
-					GroupDissolvedEvent();
-
+				case 5://Update partners 
+					ModifyPartnersEvent(parts[1]);
 					break;
-				case 6: //Add or remove user from connected list
-					string[] subparts = parts[1].Split(new[] { '/' }, 2);
-					OnlineUsersUpdatedEvent(Convert.ToInt32(subparts[0]), subparts[1]);
-					break;
-				case 7: //Add or remove a partner
-					string[] subparts2 = parts[1].Split(new[] { '/' }, 2);
-					ModifyPartner(Convert.ToInt32(subparts2[0]), subparts2[1]);
+				case 6:
+					//Group you were on was dissolved
+							GroupDissolvedEvent();
 					break;
 				case 8: //Error al enviar mensaje privado
 					
 					break;
+
 				default:
 					break;
 			}

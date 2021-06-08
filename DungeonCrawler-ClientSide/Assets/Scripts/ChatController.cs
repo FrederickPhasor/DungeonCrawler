@@ -24,7 +24,7 @@ public class ChatController : MonoBehaviour
 	[SerializeField] List<Message> messageList = new List<Message>();
 	public int maxMessages = 25;
 	string newMSG;
-	bool chatUpdate;
+	bool chatUpdate = false;
 	[TextArea]
 	public string helpMessage;
 	private void Update()
@@ -40,23 +40,23 @@ public class ChatController : MonoBehaviour
 			}
 			else if (parts[0] == "/All" || parts[0] == "/all" && PlayerData.pData.inGame == true)//All in the game
 			{
-				serverMsg = $"5/1/{parts[1]}";
+				serverMsg = "6/1/"+parts[1];
 				//SendMessageToChat($"{PlayerData.pData.GetName()}: " + parts[1], Message.MessageType.inGameGlobalMessage);
 			}
 			else if (parts[0] == "/All" || parts[0] == "/all" && PlayerData.pData.inGame == false)//All connected users
 			{
-				serverMsg = $"5/4/{parts[1]}";
+				serverMsg = $"6/4/{parts[1]}";
 				//SendMessageToChat("Tú: " + parts[1], Message.MessageType.globalMessage);
 			}
 			else if (parts[0] == "/W" || parts[0] == "/w")//whisper  name msg
 			{
 				string name = parts[1].Split(new[] { ' ' }, 2)[0]; //crear un caso del servidor en el que si no encuentra al usuario puesto devuelva un error y se muestre en chat.
-				serverMsg = $"5/2/{name}/{parts[1].Split(new[] { ' ' }, 2)[1]}";
+				serverMsg = $"6/2/{name}/{parts[1].Split(new[] { ' ' }, 2)[1]}";
 				//SendMessageToChat($"Whisper to {name}: " + parts[1].Split(new[] { ' ' }, 2)[1], Message.MessageType.whisperMessage);
 			}
 			else//group message
 			{
-				serverMsg = $"5/3/{chatInputBox.text}";
+				serverMsg = $"6/3/{chatInputBox.text}";
 				//SendMessageToChat("Tú: " + chatInputBox.text, Message.MessageType.groupMessage);
 			}
 			ServerController.server.Ask(serverMsg);

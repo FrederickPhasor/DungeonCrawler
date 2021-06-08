@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class UIConnectedPlayersMenu : MonoBehaviour
 {
-	List<string> connectedPlayersList;
+	public List<string> connectedPlayersList;
 	int currentPage;
-	bool updated;
+	bool connectedListUpdated;
 	int operation;
-	string username;
 	[SerializeField] GameObject onlineUsersList;
 	[SerializeField] GameObject nextPageButton, previousPageButton;
 	private void Start()
@@ -19,38 +19,62 @@ public class UIConnectedPlayersMenu : MonoBehaviour
 	}
 	private void OnEnable()
 	{
-		ServerController.OnlineUsersUpdatedEvent += TriggerOnlineUsersUpdate;
+		ServerController.OnlineUsersUpdatedEvent += AllOnlineUsersListUpdate;
+		ServerController.SinglePlayerConnectionStateUpdateEvent += SinglePlayerUpdate; 
 	}
 	private void OnDisable()
 	{
-		ServerController.OnlineUsersUpdatedEvent -= TriggerOnlineUsersUpdate;
+		ServerController.OnlineUsersUpdatedEvent -= AllOnlineUsersListUpdate;
+		ServerController.SinglePlayerConnectionStateUpdateEvent -= SinglePlayerUpdate;
 	}
-	void TriggerOnlineUsersUpdate(int op, string playerName)
+	void SinglePlayerUpdate(string opAndName)
 	{
-		username = playerName;
-
-		operation = op;
-
-		updated = true;
+		string[] parts = opAndName.Split('/');
+		Debug.Log("SinglePlayerUpdate ::  " + opAndName);
+		int order = Convert.ToInt32(parts[0]);
+		if (order == 1)
+		{
+			connectedPlayersList.Add(parts[1]);
+		}
+		else
+		{
+			connectedPlayersList.Remove(parts[1]);
+			//delete
+		}
+		connectedListUpdated = true;
+	}
+	void AllOnlineUsersListUpdate( string playerNames)
+	{
+		connectedListUpdated = true;
+		string[] secondPart = playerNames.Split(new[] { '/'}, 2);
+		try
+		{
+			int numberOfConectedPeople = Convert.ToInt32(secondPart[0]);
+			Debug.Log("What is left is " + secondPart[1]);
+			foreach (string username in secondPart[1].Split('/'))
+			{
+				Debug.Log("Adding now : " + username);
+				connectedPlayersList.Add(username);
+			}
+			connectedListUpdated = true;
+		}
+		catch
+		{
+			Debug.Log("Online users list failed to update");
+		}
+		
 	}
 	private void Update()
 	{
-		if (updated)
+		if (connectedListUpdated)
 		{
-			if(operation == 1)
-			{
-				connectedPlayersList.Add(username);
-			}
-			else
-			{
-				connectedPlayersList.Remove(username);
-			}
 			if (currentPage == 0)
 			{
 				previousPageButton.SetActive(false);
 			}
 			else
 				previousPageButton.SetActive(true);
+
 			if (connectedPlayersList.Count > onlineUsersList.transform.childCount && Mathf.Abs((currentPage * onlineUsersList.transform.childCount) - connectedPlayersList.Count) > onlineUsersList.transform.childCount)
 			{
 				nextPageButton.SetActive(true);
@@ -58,8 +82,10 @@ public class UIConnectedPlayersMenu : MonoBehaviour
 			else
 				nextPageButton.SetActive(false);
 			DisplayOnlineUsers();
-			updated = false;
+			connectedListUpdated = false;
 		}
+			
+		
 	}
 	public void GoNextPage()
 	{
@@ -86,9 +112,5 @@ public class UIConnectedPlayersMenu : MonoBehaviour
 			onlineUsersList.transform.GetChild(i).gameObject.SetActive(true);
 			onlineUsersList.transform.GetChild(i).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = connectedPlayersList[i + currentPage * onlineUsersList.transform.childCount];
 		}
-		//for (int j = 0; j < onlineUsersList.transform.childCount - numberToDisplay; j++)
-		//{
-		//	onlineUsersList.transform.GetChild(numberToDisplay + j).gameObject.SetActive(false);
-		//}
 	}
 }

@@ -18,13 +18,13 @@ public class PopUpControler : MonoBehaviour
     }
     public void AnswerYes()
 	{
-        ServerController.server.Ask($"3/Y/{popUpName}");
+        ServerController.server.Ask("5/Y/" + popUpName);
         PopUpClose();
 
     }
     public void AnswerNo()
 	{
-        ServerController.server.Ask($"3/N/{popUpName}");
+        ServerController.server.Ask($"5/N/{popUpName}");
         PopUpClose();
     }
     public void PopUpClose()

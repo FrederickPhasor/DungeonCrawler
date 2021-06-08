@@ -269,7 +269,7 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
-      Hash: 8369575b43ca560c8b87636192085a89
+      Hash: a501ba84497648613467f779db8d6704
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIConnectedPlayersMenu
@@ -473,7 +473,7 @@ ScriptsOnlyBuild:
     className: Button
   - hash:
       serializedVersion: 2
-      Hash: 272d9518ac7ac4c33eb3719066318b7a
+      Hash: 44201b471a1a37b334556e18e80d5ae7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UILobbyMenu
@@ -780,4 +780,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainMenu.unity
-  playerPath: C:/UnityProjectsUni/Builds/ParanoidBuild/DungeonCrawler-ClientSide.exe
+  playerPath: C:/UnityProjectsUni/Builds/DungeonCrawler-ClientSide.exe

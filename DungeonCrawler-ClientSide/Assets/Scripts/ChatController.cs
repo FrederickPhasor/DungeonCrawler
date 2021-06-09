@@ -5,6 +5,7 @@ using TMPro;
 using System;
 public class ChatController : MonoBehaviour
 {
+	
 	[Header("Chat Colors")]
 	[SerializeField] Color globalChatColor;
 	[SerializeField] Color serverMessageColor;
@@ -27,6 +28,12 @@ public class ChatController : MonoBehaviour
 	bool chatUpdate = false;
 	[TextArea]
 	public string helpMessage;
+
+	private void Awake()
+	{
+		
+	}
+
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Return))

@@ -12,7 +12,8 @@ public class TeamController : MonoBehaviour
 	{
 		//Keep moving in the last direction pressed as long as another key is pressed
 		//for instance, 1 is right, -1 is left and 0 is static.
-		MoveTeam();
+		if(PlayerData.pData.isLeader)
+			MoveTeam();
 	}
 	void MoveTeam()
 	{
@@ -21,11 +22,12 @@ public class TeamController : MonoBehaviour
 	}
 	public void SetTeamDirection(string dir)
 	{
+
 		if (dir == "1")
 		{
 			direction = 1;
 		}
-		else if(dir == "-1")
+		else if (dir == "-1")
 		{
 			direction = -1;
 		}
@@ -33,5 +35,6 @@ public class TeamController : MonoBehaviour
 		{
 			direction = 0;
 		}
+
 	}
 }

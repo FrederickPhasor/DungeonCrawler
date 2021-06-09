@@ -14,17 +14,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SimpleSelectedItems:
     m_Keys:
+    - Assets/GameManager.cs
+    - Assets/GameManager.cs.meta
+    - Assets/Imagenes/Background/BackGroundLayers.meta
+    - Assets/Imagenes/Background/BackGroundLayers/background_back-layer02.png
+    - Assets/Imagenes/Background/BackGroundLayers/background_back-layer02.png.meta
+    - Assets/Imagenes/Background/BackGroundLayers/background_front-layer.png
+    - Assets/Imagenes/Background/BackGroundLayers/background_front-layer.png.meta
+    - Assets/Imagenes/Background/BackGroundLayers/path_1.png
+    - Assets/Imagenes/Background/BackGroundLayers/path_1.png.meta
+    - Assets/Imagenes/Background/BackGroundLayers/path_2.png
+    - Assets/Imagenes/Background/BackGroundLayers/path_2.png.meta
+    - Assets/Imagenes/Background/BackGroundLayers/path_3.png
+    - Assets/Imagenes/Background/BackGroundLayers/path_3.png.meta
+    - Assets/Imagenes/Background/BackGroundLayers/path_4.png
+    - Assets/Imagenes/Background/BackGroundLayers/path_4.png.meta
+    - Assets/Imagenes/Background/closed_door.png
+    - Assets/Imagenes/Background/closed_door.png.meta
+    - Assets/Imagenes/Background/open_door.png
+    - Assets/Imagenes/Background/open_door.png.meta
+    - Assets/Imagenes/Miscelanea/DoorPrefab.prefab
+    - Assets/Imagenes/Miscelanea/DoorPrefab.prefab.meta
+    - Assets/Prefabs/Corridor.meta
+    - Assets/Prefabs/Corridor/WallPrefab.prefab
+    - Assets/Prefabs/Corridor/WallPrefab.prefab.meta
+    - Assets/Prefabs/PlayerGameObject.prefab
+    - "Assets/Scenes/DemoGr\xE1fica.unity"
+    - "Assets/Scenes/DemoGr\xE1fica.unity.meta"
     - Assets/Scenes/GameScene.unity
     - Assets/Scenes/MainMenu.unity
+    - Assets/Scenes/Map.unity
+    - Assets/Scenes/Map.unity.meta
+    - Assets/Scenes/PersistantScene.unity
+    - Assets/Scenes/PersistantScene.unity.meta
     - Assets/Scripts/ChatController.cs
-    - Assets/Scripts/MenusScene/UI/UIConnectedPlayersMenu.cs
-    - Assets/Scripts/MenusScene/UI/UILobbyMenu.cs
-    - Assets/Scripts/MenusScene/UI/UILogInMenu.cs
     - Assets/Scripts/Server/ServerController.cs
-    - Assets/Scripts/UI/UIController.cs
-    - Assets/Scripts/UI/UIController.cs.meta
+    - Assets/Scripts/ServerPetitions.cs
+    - Assets/Scripts/ServerPetitions.cs.meta
+    - Assets/Scripts/TeamController.cs
+    - Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset
+    - Assets/WaitingInQController.cs
+    - Assets/WaitingInQController.cs.meta
+    - ProjectSettings/EditorBuildSettings.asset
     - 
-    m_Values: 00000000000000000000
+    m_Values: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   RevisionSummary: 
   ChangesSearchValue: 
   SelectedHistoryRevision: 

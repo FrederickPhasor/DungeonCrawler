@@ -27,8 +27,19 @@ public class ServerController : MonoBehaviour
 	public static event AllOnlineUserListUpdate OnlineUsersUpdatedEvent;
 	public delegate void SinglePlayerUpdate(string name);
 	public static event SinglePlayerUpdate SinglePlayerConnectionStateUpdateEvent;
+	public delegate void AddGroups(int op);
+	public static event AddGroups AddGroupEvent;
+	public delegate void GameStart(int seed);
+	public static event GameStart GameStartEvent;
 
-	
+	private void Awake()
+	{
+		if (server != null)
+			GameObject.Destroy(server);
+		else
+			server = this;
+		DontDestroyOnLoad(this);
+	}
 	void OnEnable()
 	{
 		server = this;
@@ -74,8 +85,7 @@ public class ServerController : MonoBehaviour
 		{
 			Debug.Log("Thread aborting was messy");
 		}
-		Ask("-1/");
-		socket.Shutdown(SocketShutdown.Both);
+		Ask("-1/");		socket.Shutdown(SocketShutdown.Both);
 		socket.Close();
 		//Application.Quit();
 	}
@@ -132,10 +142,32 @@ public class ServerController : MonoBehaviour
 					//Group you were on was dissolved
 							GroupDissolvedEvent();
 					break;
-				case 8: //Error al enviar mensaje privado
+				case 8://
 					
 					break;
+				case 9://9/nGroupsAdd
+					string desired = parts[1].Split('/')[0];
+					int a = Int32.Parse(desired);
+					AddGroupEvent(a);
+				
 
+				
+
+					/*
+					 * num
+					 * if(num>0)
+					 * GroupJoinedEvent(num);
+					 * else
+					 * GroupJoinedEvent(-1);
+					 */
+
+					break;
+				case 10://Start the game bitch
+					GameStartEvent(Int32.Parse(parts[1].Split('/')[0]));
+					break;
+				case 11:
+
+					break;
 				default:
 					break;
 			}

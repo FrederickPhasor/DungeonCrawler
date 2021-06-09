@@ -5,22 +5,18 @@ using System;
 using UnityEngine.UI;
 
 
-public class MapController : MonoBehaviour
+public class MapController : AbstractMapGenerator
 {
     
     [SerializeField]
     [Range(0f, 1f)]
-    float emptySpacePercentage = 0.2f, emptyRoomPercentage = 0.2f;
-    [SerializeField] GameObject roomGameObject, mapHolder;
-    [SerializeField]
-    [Range(1000000, 9999999)]
-    int seed = 5034143;//size emptyRoom 
+    float emptySpacePercentage = 0.2f;
     [SerializeField]
     [Range(4, 6)]
     int amountGroups = 6;
-
-
-
+    public Room[,] allSquares;
+    public List<Room> roomList = new List<Room>();
+    public List<Room> corridors = new List<Room>();
 
 
     public void Start()
@@ -32,13 +28,14 @@ public class MapController : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
+            roomList.Clear();
+            corridors.Clear();
             CreateMap(19, 9);
 		}
 	}
 
     public void CreateMap(int sizeX, int sizeY)
     {
-        Room[,] allSquares;
         System.Random roomRand = new System.Random(seed);
         allSquares = new Room[sizeX, sizeY];
         for (int x = 0; x < sizeX; x++)
@@ -49,8 +46,7 @@ public class MapController : MonoBehaviour
             }
         }
         //int emptyRoomCount = Mathf.RoundToInt(rooms.Length * corridorPercentage);
-        bool lastRoom = false;
-        List<Room> roomList = new List<Room>();
+        bool lastRoom = false;      
 
 
         for (int col = 0; col < sizeX; col++)
@@ -136,7 +132,7 @@ public class MapController : MonoBehaviour
             tempRoomList.Add(room);
         }
 
-        List<Room> corridors = ConnectRooms(tempRoomList, allSquares);
+        corridors = ConnectRooms(tempRoomList, allSquares);
         foreach (var room in corridors)
         {
             int col = room.posX;
@@ -156,7 +152,7 @@ public class MapController : MonoBehaviour
     {
         bool lastRoom;
         rooms[col, row].type = 0;
-        mapHolder.transform.GetChild(19 * row + col).gameObject.GetComponent<Image>().color = Color.red;
+        mapHolder.transform.GetChild(19 * row + col).gameObject.GetComponent<Image>().color = Color.gray;
         lastRoom = false;
         return lastRoom;
     }
@@ -258,5 +254,12 @@ public class MapController : MonoBehaviour
         currentRoomVec.Set(currentRoom.posX, currentRoom.posY);
         float distance = Vector2.Distance(roomVec, currentRoomVec);
         return distance;
+    }
+
+    protected override void CreateNewMap()
+    {
+        roomList.Clear();
+        corridors.Clear();
+        CreateMap(19, 9);
     }
 }

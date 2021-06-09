@@ -38,8 +38,8 @@ public class UILogInMenu : MonoBehaviour
 		connectionIndicator.color = Color.red;
 		LogInMenuGameObject.SetActive(true);
 		signIn = false;
-		IPAddress.text = "192.168.56.104";
-		PORT.text = "9093";
+		IPAddress.text = "192.168.56.103";
+		PORT.text = "7003";
 	}
 	private void OnDisable()
 	{

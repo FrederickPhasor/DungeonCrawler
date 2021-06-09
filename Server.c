@@ -7,6 +7,7 @@
 #include<string.h>
 #include <mysql.h>
 #include <pthread.h>
+#include <time.h>
 //Core functions, do not touch
 void StartServer(struct sockaddr_in* serverAddress);
 void CreateNewThreadForPlayer(int* socket);
@@ -22,6 +23,7 @@ int GetIndex(int socket);
 int GetSocket(char* username);
 void NotifyEveryone(char* notification);
 void NotifyGroup(int groupIndex, char* notification);
+void StartGame();
 
 
 //Structs Definitions
@@ -44,12 +46,12 @@ typedef struct{
 	int num;
 }AllGroups;
 typedef struct{
-	int groupsIndexes[4];
-	int groupsNum;
+	int groupsIndexes[4];//lista de indices de grupos en partida
+	int groupsNum;//numero Grupos en partida
 }Game;
 typedef struct{
-	Game list[100];
-	int gamesNum;
+	Game list[100];//Lista partidas activas
+	int gamesNum;//Num partidas activas
 }AllGames;
 
 //Global Variables
@@ -63,6 +65,8 @@ int main(int argc, char *argv[]) {
 	printf("Starting Server\n");
 	StartServer(&serverAddress);
 	printf("Listening...\n");
+	srand ( time(NULL) );
+	
 
 	for(;;){
 		int incomingSocket = WaitForPlayer();
@@ -370,17 +374,22 @@ void CookRequest(char* request, int PlayerSocketID){
 				if(waitingGame.groupsIndexes[i] == -1 && added ==0){//Look for an empty group, which value is -1 and replace it with out groupIndex
 					printf("We are now storing the new group in the game\n");
 					waitingGame.groupsIndexes[i] = groupIndex;
-					added = 1;	
-					
+					waitingGame.groupsNum++;
+					allGames.list[allGames.gamesNum] = waitingGame;
+					added = 1;						
 				}
-				if(waitingGame.groupsIndexes[i] != -1){//Tell the groups that are already waiting that one more group just god added
+				if(waitingGame.groupsIndexes[i] != -1 && waitingGame.groupsIndexes[i] != groupIndex){//Tell the groups that are already waiting that one more group just got added
 					char notificationToGroup[250];
 					printf("We are notifying a group that already is in the game\n");
 					int targetGroup = waitingGame.groupsIndexes[i];
 					strcpy(notificationToGroup, "9/1/");
 					NotifyGroup(targetGroup, notificationToGroup);
-					alreadyGroupsNum++;
-				}
+					alreadyGroupsNum++;					
+				}				
+			}
+			if (allGames.list[allGames.gamesNum].groupsNum == 4){
+				printf("Starting game\n");
+				StartGame();
 			}
 			char notificationToOwnGroup[50];
 			sprintf(notificationToOwnGroup, "9/%d/",alreadyGroupsNum);
@@ -390,26 +399,31 @@ void CookRequest(char* request, int PlayerSocketID){
 		break;
 	}
 	case 8 :{//Start the Game
-		int seed = 1111111; //Testing number for now
-		char notificationToGroups[150];
-		for(int i = 0; i<4;i++){
-			int targetGroupIndex = allGames.list[allGames.gamesNum].groupsIndexes[i];
-			if(targetGroupIndex !=-1){
-				sprintf(notificationToGroups, "10/%d/", seed);
-				NotifyGroup(targetGroupIndex, notificationToGroups);
-			}
-		}
-		LockThread();
-		allGames.gamesNum++;
-		UnlockThread();
-		
-		
+		StartGame();
 		break;
 	}
 	}//Final del switch
 	
 }
 	
+
+
+void StartGame()
+{
+	int seed = rand() % 999999 + 100000;
+	printf("Seed:%d\n", seed);
+	char notificationToGroups[150];
+	for (int i = 0; i<4; i++) {
+		int targetGroupIndex = allGames.list[allGames.gamesNum].groupsIndexes[i];
+		if (targetGroupIndex != -1) {
+			sprintf(notificationToGroups, "10/%d/", seed);
+			NotifyGroup(targetGroupIndex, notificationToGroups);
+		}
+	}
+	LockThread();
+	allGames.gamesNum++;
+	UnlockThread();
+}
 
 int GetIndex(int socket){
 	for(int i = 0; i < connectedPlayers.num;i++){

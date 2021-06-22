@@ -30,6 +30,7 @@ public class UILobbyMenu : MonoBehaviour
 		ServerController.ModifyPartnersEvent += TriggerPartnerUpdate;
 		ServerController.InvitationReceivedEvent += TriggerInvitationPopUp;
 		ServerController.GroupDissolvedEvent += TriggerDissolve;
+
 	}
 	private void OnDisable()
 	{
@@ -50,14 +51,22 @@ public class UILobbyMenu : MonoBehaviour
 			dissolve = false;
 			return;
 		}
-		if (partnersUpdate)
+		if (partnersUpdate && subMenus[0].activeInHierarchy)
 		{
 			partnersUpdate = false;
 			DissolveGroup();
-			foreach(string partnerName in partnersNames)
+			PlayerData.pData.teamPlayers.Clear();
+			PlayerData.pData.SetPartners(partnersNames);
+			foreach (string partnerName in partnersNames)
 			{
 				AddAPartner(partnerName);
 			}
+			
+		}
+		if(UILogInMenu.nameUpdated)
+        {
+			Players[0].SetActive(true);
+			Players[0].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = PlayerData.pData.GetName() + "\n";
 		}
 	}
 	public List<string> partnersNames = new List<string>();
@@ -84,23 +93,6 @@ public class UILobbyMenu : MonoBehaviour
 	{
 		GameObject newPopUp = Instantiate(popUpPrefab, LobbyMenuGameObject.transform);
 		newPopUp.GetComponent<PopUpControler>().popUpName = whoInvitedUsName;
-	}
-	void DeletePartner()
-	{
-		//Debug.Log("We are going to delete a user  : "+ partnerName);
-		//foreach (GameObject player in Players)
-		//{
-		//	if (player.activeInHierarchy)
-		//	{
-		//		print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-		//		print(player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName);
-		//		if (player.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text == partnerName)	
-		//		{
-		//			Debug.Log("We foud the guy");
-		//			player.SetActive(false);
-		//		}
-		//	}
-		//}
 	}
 	public void AddAPartner(string partnerName)
 	{
@@ -178,6 +170,12 @@ public class UILobbyMenu : MonoBehaviour
 		LogInMenuGameObject.SetActive(true);
 		transform.GetComponent<UILogInMenu>().enabled = true;
 		LobbyMenuGameObject.SetActive(false);
+		partnersNames.Clear();
+        foreach (var player in Players)
+        {
+			player.SetActive(false);
+        }
+		ServerController.server.DisconnectFromServer();
 		this.enabled = false;
 	}
 }

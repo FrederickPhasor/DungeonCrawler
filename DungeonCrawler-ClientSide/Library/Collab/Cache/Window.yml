@@ -14,20 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SimpleSelectedItems:
     m_Keys:
-    - Assets/Scripts/MapGenerator.meta
-    - Assets/Scripts/MapGenerator/AbstractMapGenerator.cs
-    - Assets/Scripts/MapGenerator/AbstractMapGenerator.cs.meta
-    - Assets/Scripts/MapGenerator/Editor.meta
-    - Assets/Scripts/MapGenerator/Editor/MapEditor.cs
-    - Assets/Scripts/MapGenerator/Editor/MapEditor.cs.meta
-    - Assets/Scripts/MapGenerator/MapController.cs
-    - Assets/Scripts/MapGenerator/MapController.cs.meta
-    - Assets/Scripts/MapGenerator/Room.cs
-    - Assets/Scripts/MapGenerator/Room.cs.meta
-    - Assets/Scripts/Server/Server.c
-    - Assets/Scripts/Server/Server.c.meta
+    - Assets/EnemyTeamsController.cs
+    - Assets/FightingPos.cs
+    - Assets/FightingPos.cs.meta
+    - Assets/FightsManager.cs
+    - Assets/Prefabs/Team/Team.prefab
+    - Assets/Scenes/GameScene.unity
+    - Assets/Scenes/MainMenu.unity
+    - Assets/Scripts/Server/ServerController.cs
+    - Assets/Scripts/TeamController.cs
+    - ProjectSettings/ProjectSettings.asset
     - 
-    m_Values: 00000000000000000000000000
+    m_Values: 0101010101010101010101
   RevisionSummary: 
   ChangesSearchValue: 
   SelectedHistoryRevision: 

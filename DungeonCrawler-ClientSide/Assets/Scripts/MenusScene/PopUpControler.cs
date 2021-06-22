@@ -20,7 +20,7 @@ public class PopUpControler : MonoBehaviour
 	{
         ServerController.server.Ask("5/Y/" + popUpName);
         PopUpClose();
-
+        PlayerData.pData.isLeader = false;
     }
     public void AnswerNo()
 	{

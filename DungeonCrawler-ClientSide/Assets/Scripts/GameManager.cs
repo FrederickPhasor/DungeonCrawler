@@ -7,8 +7,13 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
 	public static GameManager sceneManager;
+	//public string[] groups = new string [5];
+	public List<string> groups = new List<string>();
+	public bool groupsUpdated = false;
 	[SerializeField] GameObject waitingScreenGameObject;
 	[SerializeField] TextMeshProUGUI textDisplayer;
+
+
 	private void Awake()
 	{
 		if (sceneManager != null)
@@ -17,22 +22,33 @@ public class GameManager : MonoBehaviour
 			sceneManager = this;
 		DontDestroyOnLoad(this);
 	}
+
 	private void OnEnable()
 	{
 		ServerController.GameStartEvent += StartingGameScene;
+		ServerController.EnemyListUpdateEvent += SetEnemyGroups;
 	}
+
 	private void OnDisable()
 	{
 		ServerController.GameStartEvent -= StartingGameScene;
 	}
+
 	List<AsyncOperation> scenesLoading = new List<AsyncOperation>();
 	bool gameStarted = false;
+	bool startingGameSceneStartedAlready = true;
 	int gameSeed;
+
 	void StartingGameScene(int seed)
 	{
-		gameStarted = true;
+		if (startingGameSceneStartedAlready)
+		{
+			gameStarted = true;
+			startingGameSceneStartedAlready = false;
+		}
 		gameSeed = seed;
 	}
+
 	private void Update()
 	{
 		if (gameStarted)
@@ -42,8 +58,11 @@ public class GameManager : MonoBehaviour
 			scenesLoading.Add(SceneManager.UnloadSceneAsync(1));
 			scenesLoading.Add(SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive));
 			StartCoroutine(GetSceneLoadProgress());
+			waitingScreenGameObject.SetActive(false);
+			gameStarted = false;
 		}
 	}
+
 	void EndOfGame()
 	{
 		waitingScreenGameObject.SetActive(true);
@@ -51,6 +70,7 @@ public class GameManager : MonoBehaviour
 		scenesLoading.Add(SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive));
 		StartCoroutine(GetSceneLoadProgress());
 	}
+
 	private void Start()
 	{
 		SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
@@ -74,6 +94,17 @@ public class GameManager : MonoBehaviour
 			}
 		}
 		scenesLoading.Clear();
+	}
+
+	public void SetEnemyGroups(string enemyList)
+    {
+		string[] groupss = enemyList.Split('_');
+        for (int i = 0; i < groupss.Length-1; i++)
+        {
+			groups.Add(groupss[i]);
+			Debug.Log("Group:" + groups[i]);
+		}
+		groupsUpdated = true;
 	}
 	
 }

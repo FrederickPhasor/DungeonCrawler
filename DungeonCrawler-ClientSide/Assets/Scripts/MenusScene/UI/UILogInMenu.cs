@@ -16,6 +16,7 @@ public class UILogInMenu : MonoBehaviour
 	public delegate void ConnectionToServerStablished();
 	public static event ConnectionToServerStablished ConnectionToServerStablishedEvent;
 	bool signIn;
+	public static bool nameUpdated;
 	private void Update()
 	{
 		if (signIn)
@@ -27,6 +28,7 @@ public class UILogInMenu : MonoBehaviour
 			LogInMenuGameObject.SetActive(false);
 			connectionIndicator.color = Color.red;
 			signIn = false;
+			nameUpdated = true;
 			this.enabled = false;
 		}
 	}
@@ -38,8 +40,8 @@ public class UILogInMenu : MonoBehaviour
 		connectionIndicator.color = Color.red;
 		LogInMenuGameObject.SetActive(true);
 		signIn = false;
-		IPAddress.text = "192.168.56.103";
-		PORT.text = "7003";
+		IPAddress.text = "192.168.56.104";
+		PORT.text = "7000";
 	}
 	private void OnDisable()
 	{
@@ -47,7 +49,8 @@ public class UILogInMenu : MonoBehaviour
 	}
 	public void SignInAttemp()
 	{
-        ServerController.server.Ask($"2/{username.text}/{password.text}");
+		if (password.text != "" && username.text != "")
+			ServerController.server.Ask($"2/{username.text}/{password.text}");
 	}
     public void AttemptConnectionToServer()
 	{

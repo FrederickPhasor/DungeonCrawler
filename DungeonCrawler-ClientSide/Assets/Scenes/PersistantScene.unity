@@ -152,6 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 557c6684c45638a4ea2b4b4caf742442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groups: []
+  groupsUpdated: 0
   waitingScreenGameObject: {fileID: 1684937611}
   textDisplayer: {fileID: 1699266382}
 --- !u!4 &647311438
@@ -254,6 +256,7 @@ GameObject:
   - component: {fileID: 806848921}
   - component: {fileID: 806848920}
   - component: {fileID: 806848919}
+  - component: {fileID: 806848922}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -275,6 +278,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isLeader: 0
   inGame: 0
+  startingRoom: 
+  teamPlayers: []
+  playerCharacter: {fileID: 0}
 --- !u!114 &806848920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,6 +307,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &806848922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806848918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3b409ed81e19a44943dca3e069479b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  partnerName: 
+  health: 0
+  armour: 0
+  attackBonus: 0
+  initiative: 0
+  classe: 
 --- !u!1 &1684937611
 GameObject:
   m_ObjectHideFlags: 0

@@ -54,6 +54,7 @@ public class WaitingInQController : MonoBehaviour
 			if (targetTime <= 0.0f)
 			{
 				TimerEnded();
+				waitingInQ = false;
 				waitingTime.text = "Iniciando partida...";
 			}
 		}

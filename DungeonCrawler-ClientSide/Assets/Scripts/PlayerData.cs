@@ -8,11 +8,23 @@ public  class PlayerData : MonoBehaviour
     string playerName;
     public  bool isLeader;
     public bool inGame;
-	private void Update()
+    public string startingRoom;
+    public List<CharacterData> teamPlayers = new List<CharacterData>();
+    public CharacterData playerCharacter;
+	
+    public void SetPartners(List<string> partnersNames)
 	{
-    }
+        teamPlayers.Clear();
+        foreach(string name in partnersNames)
+		{
+            CharacterData username = new CharacterData();
+            username.SetName(name);
+            teamPlayers.Add(username);
+		}
+	}
 	void Awake()
     {
+        playerCharacter = GetComponent<CharacterData>();
         playerName = "OfflineName";
         isLeader = true;
         inGame = false;
@@ -22,13 +34,14 @@ public  class PlayerData : MonoBehaviour
             pData = this;
         DontDestroyOnLoad(this);
     }
-    public string GetName()
+	public string GetName()
 	{
         return playerName;
 	}
-	
 	public void SetName(string username)
 	{
         playerName = username;
-	}
+        playerCharacter.SetName(username);
+    }
+
 }

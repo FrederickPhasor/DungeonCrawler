@@ -40,6 +40,9 @@ typedef struct{
 typedef struct{
 	int partnersSockets[4];
 	int num;
+	char currentCoordinate[4];
+	
+	int gameIndex;
 }Group;
 typedef struct{
 	Group list[100];
@@ -66,8 +69,6 @@ int main(int argc, char *argv[]) {
 	StartServer(&serverAddress);
 	printf("Listening...\n");
 	srand ( time(NULL) );
-	
-
 	for(;;){
 		int incomingSocket = WaitForPlayer();
 		printf("We have a new user\n");
@@ -355,6 +356,7 @@ void CookRequest(char* request, int PlayerSocketID){
 		break;
 	case 7: {//Buscar partida
 		int groupIndex = connectedPlayers.list[GetIndex(mySocket)].currentGroupIndex;
+		Group myGroup = allGroups.list[groupIndex];
 		LockThread();
 		Game waitingGame = allGames.list[allGames.gamesNum];
 		int added = 0;
@@ -371,7 +373,7 @@ void CookRequest(char* request, int PlayerSocketID){
 		}
 		else{
 			for(int i = 0;i<4;i++){
-				if(waitingGame.groupsIndexes[i] == -1 && added ==0){//Look for an empty group, which value is -1 and replace it with out groupIndex
+				if(waitingGame.groupsIndexes[i] == -1 && added ==0){//Look for an empty group, which value is -1 and replace it with our groupIndex
 					printf("We are now storing the new group in the game\n");
 					waitingGame.groupsIndexes[i] = groupIndex;
 					waitingGame.groupsNum++;
@@ -379,10 +381,10 @@ void CookRequest(char* request, int PlayerSocketID){
 					added = 1;						
 				}
 				if(waitingGame.groupsIndexes[i] != -1 && waitingGame.groupsIndexes[i] != groupIndex){//Tell the groups that are already waiting that one more group just got added
-					char notificationToGroup[250];
+					char notificationToGroup[10];
 					printf("We are notifying a group that already is in the game\n");
 					int targetGroup = waitingGame.groupsIndexes[i];
-					strcpy(notificationToGroup, "9/1/");
+					sprintf(notificationToGroup, "9/1/");
 					NotifyGroup(targetGroup, notificationToGroup);
 					alreadyGroupsNum++;					
 				}				
@@ -391,7 +393,7 @@ void CookRequest(char* request, int PlayerSocketID){
 				printf("Starting game\n");
 				StartGame();
 			}
-			char notificationToOwnGroup[50];
+			char notificationToOwnGroup[250];
 			sprintf(notificationToOwnGroup, "9/%d/",alreadyGroupsNum);
 			NotifyGroup(groupIndex, notificationToOwnGroup);
 		}
@@ -402,25 +404,116 @@ void CookRequest(char* request, int PlayerSocketID){
 		StartGame();
 		break;
 	}
+	case 9: { // Movement 
+		tempString = strtok(NULL, "/");//Direction
+		int direction = atoi(tempString); // 1 right
+		int myGroup = connectedPlayers.list[GetIndex(mySocket)].currentGroupIndex;
+		if (direction == 1) {
+			NotifyGroup(myGroup, "11/1/");
+		}
+		else if (direction == -1) {
+			NotifyGroup(myGroup, "11/2/");	
+		}
+		else if (direction == 0) {
+			NotifyGroup(myGroup, "11/0/");
+		}
+	break;
+	}
+	case 10: { // Room Update
+		tempString = strtok(NULL, "/");
+		int myGroupIndex = connectedPlayers.list[GetIndex(mySocket)].currentGroupIndex;
+		LockThread();
+		strcpy(allGroups.list[myGroupIndex].currentCoordinate, tempString); // Actualiza nuestra habitación
+		UnlockThread();
+		int myGame =  allGroups.list[myGroupIndex].gameIndex;
+		int sameRoom[4];
+		for(int i=0;i<3;i++){
+			sameRoom[i] = -1;
+		}
+		int num = 0;
+		for(int i = 0;i<4;i++){
+			int targetGroup = allGames.list[myGame].groupsIndexes[i];
+			if (targetGroup != myGroupIndex){
+				if (strcmp (allGroups.list[targetGroup].currentCoordinate, tempString) == 0) {
+					sameRoom[num] = targetGroup;//Lista de indices de grupos en la misma coordinada!
+					num++;
+					char sendCoordinate[50];
+					strcpy(sendCoordinate, tempString);
+					sprintf(sendCoordinate, "12/%d/", myGroupIndex);
+					NotifyGroup(targetGroup, sendCoordinate);
+				}
+			}
+			
+		}
+		char receiveCoordinate[50];
+		strcpy(receiveCoordinate, "13");
+		strcat(receiveCoordinate, "/");
+		if(num == 0){
+			strcat(receiveCoordinate, "EMPTY");
+		}
+		else{
+			for (int i = 0; i<3; i++) {
+				char temp[100];
+				int teamIndex = sameRoom[i];
+				if(teamIndex != -1){	
+					sprintf(temp, "%d", teamIndex);
+					strcat(receiveCoordinate, temp);
+					strcat(receiveCoordinate, "/");
+				}
+			}
+		}
+		//13/groupindex1/grupIndex2/.../
+		NotifyGroup(myGroupIndex, receiveCoordinate);
+	}
 	}//Final del switch
-	
 }
-	
-
-
 void StartGame()
 {
 	int seed = rand() % 999999 + 100000;
-	printf("Seed:%d\n", seed);
-	char notificationToGroups[150];
-	for (int i = 0; i<4; i++) {
-		int targetGroupIndex = allGames.list[allGames.gamesNum].groupsIndexes[i];
-		if (targetGroupIndex != -1) {
-			sprintf(notificationToGroups, "10/%d/", seed);
-			NotifyGroup(targetGroupIndex, notificationToGroups);
+	//00  0 8  18 0  18 8 : spawnPoints 
+	int spawnPoints[4][2] = {  
+	{0, 0} ,   /*  initializers for row indexed by 0 */
+	{0, 1} ,   /*  initializers for row indexed by 1 */
+	{18, 0} ,  /*  initializers for row indexed by 2 */
+	{18, 8}
+	};
+	char notificationToGroups[3000];
+	char partnersInfo[100];
+	char newCoords[5];
+	for(int i = 0; i<4;i++){//Prepara un string con toda la información de todos los grupos 4:
+		char groupNotStart[4];
+		int groupIndex = allGames.list[allGames.gamesNum].groupsIndexes[i];
+		printf("The group we are printing now has index : %d", groupIndex);
+		if(groupIndex != -1){
+			Group thisGroup =allGroups.list[groupIndex];
+			sprintf(groupNotStart, "%d:",groupIndex); // Mete el indice del grupo
+			strcat(partnersInfo, groupNotStart);
+			for(int j = 0; j<4;j++){
+				int partnerSocket = thisGroup.partnersSockets[j];
+				if(partnerSocket != -1){
+					strcat(partnersInfo, connectedPlayers.list[GetIndex(partnerSocket)].username);
+					//Aquí podemos añadir cosas como tipo de personaje and shits.
+					strcat(partnersInfo, "|");
+				}
+				else{
+					strcat(partnersInfo,"-1");
+					strcat(partnersInfo, "|");
+				}
+			}
+			strcat(partnersInfo, "_");//Indica cambio de grupo
 		}
 	}
 	LockThread();
+	for (int i = 0; i<4; i++) { //Pone a cada grupo en una posicion inicial  y se los notifica
+		int targetGroupIndex = allGames.list[allGames.gamesNum].groupsIndexes[i];
+		if (targetGroupIndex != -1){//Notifica las posiciones iniciales
+			sprintf(notificationToGroups, "10/%d/%d%d/%s", seed, spawnPoints[i][0], spawnPoints[i][1], partnersInfo);
+			//This should look like : 10/seed/spawnPointCoords/int:ana|pedro|juan|-1||int:ZAPATO|-1|-1|-1||
+			sprintf(newCoords, "%d%d", spawnPoints[i][0], spawnPoints[i][1]);
+			strcpy(allGroups.list[targetGroupIndex].currentCoordinate, newCoords);
+			NotifyGroup(targetGroupIndex, notificationToGroups);//last thing to be done
+		}
+	}
 	allGames.gamesNum++;
 	UnlockThread();
 }
@@ -441,12 +534,14 @@ int GetSocket(char* username){
 }
 void NotifyGroup(int groupIndex, char* notification){
 	printf("We are sending : %s to group %d\n", notification, groupIndex);
+	char mensaje[500];
+	strcpy(mensaje, notification);
 	Group targetGroup = allGroups.list[groupIndex];
 	for(int i=0;i<4;i++){
 		int targetSocket = targetGroup.partnersSockets[i];
 		if(targetSocket != -1){
 			printf("Sent to : %s\n", connectedPlayers.list[GetIndex(targetSocket)].username);
-			write(targetSocket, notification,sizeof(notification));	
+			write(targetSocket, mensaje, sizeof(mensaje));	
 		}
 	}
 }

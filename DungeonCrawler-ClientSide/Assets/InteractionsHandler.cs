@@ -13,7 +13,7 @@ public class InteractionsHandler : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit.collider != null)
             {
-                Debug.Log("We are pointing at : " + hit.collider.gameObject.GetComponent<CharacterData>().GetName());
+                 selectedTarget = hit.collider.gameObject.GetComponent<CharacterData>().GetName();
             }
         }
     }
@@ -23,4 +23,11 @@ public class InteractionsHandler : MonoBehaviour
 	{
         skillSelected = num;
 	}
+    string selectedTarget;
+    public string GetSelectedUser()
+	{
+        return selectedTarget;
+	}
+
+
 }

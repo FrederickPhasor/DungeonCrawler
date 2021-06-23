@@ -151,19 +151,19 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3668}
     - Class: 114
-      Script: {instanceID: 4002}
+      Script: {instanceID: 3798}
     - Class: 114
-      Script: {instanceID: 4252}
+      Script: {instanceID: 4004}
     - Class: 114
-      Script: {instanceID: 4284}
+      Script: {instanceID: 4254}
     - Class: 114
-      Script: {instanceID: 4916}
+      Script: {instanceID: 4286}
     - Class: 114
-      Script: {instanceID: 4920}
+      Script: {instanceID: 4918}
     - Class: 114
-      Script: {instanceID: 5036}
+      Script: {instanceID: 4922}
     - Class: 114
-      Script: {instanceID: 78154}
+      Script: {instanceID: 5038}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -256,21 +256,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3470}
     - Class: 114
-      Script: {instanceID: 3994}
+      Script: {instanceID: 3996}
     - Class: 114
-      Script: {instanceID: 4176}
+      Script: {instanceID: 4178}
     - Class: 114
-      Script: {instanceID: 4252}
+      Script: {instanceID: 4254}
     - Class: 114
-      Script: {instanceID: 4278}
+      Script: {instanceID: 4280}
     - Class: 114
-      Script: {instanceID: 4618}
+      Script: {instanceID: 4620}
     - Class: 114
-      Script: {instanceID: 4698}
+      Script: {instanceID: 4700}
     - Class: 114
-      Script: {instanceID: 4920}
+      Script: {instanceID: 4922}
     - Class: 114
-      Script: {instanceID: 5036}
+      Script: {instanceID: 5038}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -319,15 +319,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3266}
     - Class: 114
-      Script: {instanceID: 4022}
+      Script: {instanceID: 4024}
     - Class: 114
-      Script: {instanceID: 4272}
+      Script: {instanceID: 4274}
     - Class: 114
-      Script: {instanceID: 4608}
+      Script: {instanceID: 4610}
     - Class: 114
-      Script: {instanceID: 4920}
+      Script: {instanceID: 4922}
     - Class: 114
-      Script: {instanceID: 5008}
+      Script: {instanceID: 5010}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -771,7 +771,7 @@ ScriptsOnlyBuild:
     className: PositionAsUV1
   - hash:
       serializedVersion: 2
-      Hash: f94d453a8256418a2011c15942baf0aa
+      Hash: 06265793fb47a0e487f6e96fe3e56168
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: FightsManager
@@ -793,6 +793,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
     className: EventTrigger
+  - hash:
+      serializedVersion: 2
+      Hash: a87f7939274467ca61a3e5742994b9f2
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: FightingPos
   - hash:
       serializedVersion: 2
       Hash: 87cef3c82381dc586f6772c3e27561b6
@@ -837,7 +843,7 @@ ScriptsOnlyBuild:
     className: InteractionsHandler
   - hash:
       serializedVersion: 2
-      Hash: 160a2b882b7b941f9a39194032c213d4
+      Hash: 5212cb1edbc00edcdecc6b108692a324
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerData
@@ -1015,12 +1021,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.2D.IK.Runtime.dll
     namespaceName: UnityEngine.U2D.IK
     className: FabrikSolver2D
-  - hash:
-      serializedVersion: 2
-      Hash: a87f7939274467ca61a3e5742994b9f2
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: FightingPos
   platform: 19
   scenePathNames:
   - Assets/Scenes/PersistantScene.unity

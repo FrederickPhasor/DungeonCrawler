@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class FightingPos : MonoBehaviour
 {
-	public bool inUse;
+	public bool inUse = false;
 }

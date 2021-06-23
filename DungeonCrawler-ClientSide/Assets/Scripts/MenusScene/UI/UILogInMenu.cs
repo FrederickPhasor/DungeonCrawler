@@ -13,11 +13,20 @@ public class UILogInMenu : MonoBehaviour
 	[SerializeField] Image connectionIndicator;
 	[SerializeField] GameObject LobbyMenuGameObject;
 	[SerializeField] GameObject LogInMenuGameObject;
+	[Header("Pop Ups")]
+	[SerializeField] GameObject popUpRegisterPrefab;
+
 	public delegate void ConnectionToServerStablished();
 	public static event ConnectionToServerStablished ConnectionToServerStablishedEvent;
 	bool signIn;
 	public static bool nameUpdated;
-	private void Update()
+	bool displayRegister;
+
+    private void Start()
+    {
+		displayRegister = false;
+	}
+    private void Update()
 	{
 		if (signIn)
 		{
@@ -31,8 +40,19 @@ public class UILogInMenu : MonoBehaviour
 			nameUpdated = true;
 			this.enabled = false;
 		}
+
+		if(displayRegister)
+        {
+			RegisterPopUpApear();
+			displayRegister = false;
+        }
 	}
-	
+
+	public void RegisterPopUpApear()
+	{
+		Instantiate(popUpRegisterPrefab, LogInMenuGameObject.transform);
+	}
+
 	private void OnEnable()
 	{
 		Debug.Log("OnEnable went off");
@@ -40,8 +60,8 @@ public class UILogInMenu : MonoBehaviour
 		connectionIndicator.color = Color.red;
 		LogInMenuGameObject.SetActive(true);
 		signIn = false;
-		IPAddress.text = "192.168.56.104";
-		PORT.text = "7000";
+		IPAddress.text = "192.168.56.103";
+		PORT.text = "7004";
 	}
 	private void OnDisable()
 	{
@@ -52,7 +72,13 @@ public class UILogInMenu : MonoBehaviour
 		if (password.text != "" && username.text != "")
 			ServerController.server.Ask($"2/{username.text}/{password.text}");
 	}
-    public void AttemptConnectionToServer()
+	public void RegisterAttemp()
+	{
+		if (password.text != "" && username.text != "")
+			ServerController.server.Ask($"1/{username.text}/{password.text}");
+		displayRegister = true;
+	}
+	public void AttemptConnectionToServer()
 	{
         int result = ServerController.server.ConnectToServer(IPAddress.text, PORT.text);
 		if (result == 0)

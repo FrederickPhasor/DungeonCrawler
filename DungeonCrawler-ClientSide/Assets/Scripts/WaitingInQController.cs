@@ -24,6 +24,11 @@ public class WaitingInQController : MonoBehaviour
 	public void AddGroup(int amount)
 	{
 		currentGroups += amount;
+
+		if (PlayerData.pData.groupIndexSet == false)
+		{
+			PlayerData.pData.mygroupIndex = currentGroups - 1;
+		}
 		updated = true;
 	}
 	bool waitingInQ = false;

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class EnemyTeamsController : MonoBehaviour
 {
   
@@ -20,6 +20,36 @@ public class EnemyTeamsController : MonoBehaviour
 	{
         ServerController.SomeoneEnteredMyRoomEvent += AddGroupTrigger;
         ServerController.GetCurrenntGroupsInCoordsEvent += AddMultipleGroups;
+        ServerController.SomeoneDiedEvent += CheckWhoDiedTrigger;
+        ServerController.GetDamagedEvent += GetDamaged;
+    }
+	private void OnDisable()
+    {
+        ServerController.SomeoneEnteredMyRoomEvent -= AddGroupTrigger;
+        ServerController.GetCurrenntGroupsInCoordsEvent -= AddMultipleGroups;
+        ServerController.SomeoneDiedEvent -= CheckWhoDiedTrigger;
+        ServerController.GetDamagedEvent -= GetDamaged;
+    }
+    string userDamaged;
+    int damagedAmount;
+    bool someoneWasDamaged = false;
+    public void GetDamaged(string amount)
+    {
+        //username/damage
+        string[] parts = amount.Split(new[] { '/' }, 2);
+        userDamaged = parts[0];
+        damagedAmount = Convert.ToInt32(parts[1].Split(new[] { '/' }, 2)[0]);
+        someoneWasDamaged = true;
+    }
+    string deathOneTemp;
+    bool deathOcurred;
+    public void CheckWhoDiedTrigger(string who)
+	{
+        deathOneTemp =who;
+        if (who != PlayerData.pData.GetName())
+		{
+            deathOcurred = true;
+        }
     }
     // Update is called once per frame
     List<string> groups;
@@ -51,14 +81,19 @@ public class EnemyTeamsController : MonoBehaviour
         }
 		if (enemyTeamsUpdated)//Someone enters your room
 		{
-            foreach(GameObject teamGo in enemyTeamsGameObjects)
+            if(currentlyConfrontedTeams.Count > 0)
 			{
-                if (teamGo.GetComponent<EnemyGroup>().groupIndex == tempId)
-				{
-                    teamGo.SetActive(true);
-                    ATeamEnterTheFight(teamGo);
+                foreach (GameObject teamGo in enemyTeamsGameObjects)
+                {
+                    string targetIndex = currentlyConfrontedTeams.Pop();
+                    if (teamGo.GetComponent<EnemyGroup>().groupIndex == targetIndex)
+                    {
+                        teamGo.SetActive(true);
+                        ATeamEnterTheFight(teamGo);
+                    }
                 }
-			}
+                enemyTeamsUpdated = false;
+            }
 		}
 		if (multipleAdded)
 		{
@@ -75,12 +110,26 @@ public class EnemyTeamsController : MonoBehaviour
                 }
             }       
         }
+		if (deathOcurred)
+		{
+            //Check everyfucking one 
+            foreach(GameObject enemyTeam in enemyTeamsGameObjects)
+			{
+               for(int i = 0; i < enemyTeam.transform.childCount; i++)
+				{
+                    
+       
+				}
+			}
+            deathOcurred = false;
+		}
     }
+
     bool enemyTeamsUpdated = false;
     string tempId;
     public void AddGroupTrigger(string id)
 	{
-        tempId = id;
+        currentlyConfrontedTeams.Push(id);
         enemyTeamsUpdated = true;
 	}
     Stack<string> currentlyConfrontedTeams = new Stack<string>();

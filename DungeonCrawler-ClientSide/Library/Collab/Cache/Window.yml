@@ -14,20 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SimpleSelectedItems:
     m_Keys:
-    - Assets/EnemyTeamsController.cs
-    - Assets/FightingPos.cs
-    - Assets/FightingPos.cs.meta
-    - Assets/FightsManager.cs
-    - Assets/Prefabs/Team/Team.prefab
-    - Assets/Scenes/GameScene.unity
     - Assets/Scenes/MainMenu.unity
-    - Assets/Scripts/Server/ServerController.cs
-    - Assets/Scripts/TeamController.cs
-    - ProjectSettings/ProjectSettings.asset
     - 
-    m_Values: 0101010101010101010101
-  RevisionSummary: 
+    m_Values: 0101
+  RevisionSummary: AAAAAAAAAAAAAAA
   ChangesSearchValue: 
   SelectedHistoryRevision: 
   HistoryPageNumber: 0
-  TabIndex: 0
+  TabIndex: 1

@@ -61,12 +61,12 @@ public class UILobbyMenu : MonoBehaviour
 			{
 				AddAPartner(partnerName);
 			}
-			
 		}
 		if(UILogInMenu.nameUpdated)
         {
 			Players[0].SetActive(true);
 			Players[0].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = PlayerData.pData.GetName() + "\n";
+			UILogInMenu.nameUpdated = false;
 		}
 	}
 	public List<string> partnersNames = new List<string>();
@@ -153,8 +153,9 @@ public class UILobbyMenu : MonoBehaviour
 	{
 		ActivateMenu(3);
 	}
-	public void HeroesButton()
+	public void RecentPlayersButton()
 	{
+		ServerController.server.Ask("12/");
 		ActivateMenu(4);
 	}
 	public void BountyHuntButton()

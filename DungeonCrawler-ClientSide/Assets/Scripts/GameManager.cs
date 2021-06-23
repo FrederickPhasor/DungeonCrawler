@@ -102,7 +102,6 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < groupss.Length-1; i++)
         {
 			groups.Add(groupss[i]);
-			Debug.Log("Group:" + groups[i]);
 		}
 		groupsUpdated = true;
 	}

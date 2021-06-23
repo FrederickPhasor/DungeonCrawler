@@ -39,6 +39,18 @@ public class ServerController : MonoBehaviour
 	public static event SomeoneEntered SomeoneEnteredMyRoomEvent;
 	public delegate void GetCurrenntGroupsInCoords(string indexesGroups);
 	public static event GetCurrenntGroupsInCoords GetCurrenntGroupsInCoordsEvent;
+	public delegate void AllRecentUserListUpdate(string names);
+	public static event AllRecentUserListUpdate RecentUsersUpdatedEvent;
+	public delegate void FightStateUpdate(string fightState);
+	public static event FightStateUpdate FightStateUpdateEvent;
+	public delegate void GetDamaged(string WhoAndamount);
+	public static event GetDamaged GetDamagedEvent;
+	public delegate void SomeoneDied(string whoAsked);
+	public static event SomeoneDied SomeoneDiedEvent;
+	public delegate void RecentSinglePlayerUpdate(string name);
+	public static event RecentSinglePlayerUpdate RecentSinglePlayerGamesUpdateEvent;
+	public delegate void PastGamesUpdate(string name);
+	public static event PastGamesUpdate PastGamesEvent;
 
 	private void Awake()
 	{
@@ -153,7 +165,7 @@ public class ServerController : MonoBehaviour
 							GroupDissolvedEvent();
 					break;
 				case 8://Update enemyGroups position
-					
+
 					break;
 				case 9://9/nGroupsAdd
 					string desired = parts[1].Split('/')[0];
@@ -184,13 +196,42 @@ public class ServerController : MonoBehaviour
 					ChangeDirectionEvent(parts[1]);
 					break;
 				case 12://Un grupo ha entrado a tu habitación actual
-					SomeoneEnteredMyRoomEvent(parts[1]);
+					SomeoneEnteredMyRoomEvent(parts[1].Split(new[] { '/' }, 2)[0]);
 					break;
 
-				case 13: //Obtenemos los que ya están dentro cuando nosotros somos los que entramos
+				case 13: //Hemos entrado a una habitación y estaba vacía, aprovechar quizá para dar algún premio o spawnear algo para pelear or wtver
 					GetCurrenntGroupsInCoordsEvent(parts[1]);
 					break;
-				case 14://Damage
+				case 14://amountDamaged
+					int amount = Convert.ToInt32(parts[1]);
+					PlayerData.pData.health -= amount;
+					break;
+				case 15://lista jugadores recientes
+					RecentUsersUpdatedEvent(parts[1]);
+					break;
+				case 16://resultados partidas vs 1 jugador
+					RecentSinglePlayerGamesUpdateEvent(parts[1]);
+					break;
+				case 17:
+					//Update fight state // grupo1/grupo2/grupo3/grupo4/|rondaActual/OrdenDeLosTurnos:jugadorQueJuega/
+					//Los ordenes de turno son una cadena como 1:2_0:2_4:1_2:5 lo que indica que primero va el grupo 1 y dentro de ese grupo 1 le toca al jugador 1 o whatever
+					string[] multipleParts = parts[1].Split(new[] { '|' }, 2);
+					GetCurrenntGroupsInCoordsEvent(multipleParts[0]);//Pasarle los grupos
+					FightStateUpdateEvent(multipleParts[1]);
+					//Una vez ese jugador confirme que su jugada está preparada o bien que se le ha acabado el tiempo de acción, se mantiene en espera su acción
+					//Se pasa al grupo 0 jugador 2, hace su acción o se agota el tiempo y se pone en espera su acción
+					//Una vez se ha completado el ciclo entero, el servidor enviará en el caso 18 la cadena con la combinación de acciones tomadas y se calculará el resultado.
+
+					break;
+				case 18://Cadena de acciones de pelea, como máximo 4 acciones por turno
+						//cada acción es un comando simple, un jugador del gr
+					break;
+				case 19://lista partidas recientes
+					PastGamesEvent(parts[1]);
+					break;
+				case 20://Someone died, could be us
+					string target = parts[1];//The one who died
+					SomeoneDiedEvent(target.Split(new[] { '\0' }, 2)[0]);
 					break;
 				default:
 					break;

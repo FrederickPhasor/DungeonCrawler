@@ -6,11 +6,14 @@ public  class PlayerData : MonoBehaviour
 {
     public static PlayerData pData;
     string playerName;
+    public int health = 30;
     public  bool isLeader;
     public bool inGame;
     public string startingRoom;
     public List<CharacterData> teamPlayers = new List<CharacterData>();
     public CharacterData playerCharacter;
+    public  int mygroupIndex;
+    public bool groupIndexSet = false;
 	
     public void SetPartners(List<string> partnersNames)
 	{
@@ -43,5 +46,12 @@ public  class PlayerData : MonoBehaviour
         playerName = username;
         playerCharacter.SetName(username);
     }
+	private void Update()
+	{
+		if(health <= 0)
+		{
+            ServerController.server.Ask("12/" + playerName);
+		}
+	}
 
 }

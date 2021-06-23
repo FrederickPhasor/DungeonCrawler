@@ -41,7 +41,6 @@ typedef struct{
 	int partnersSockets[4];
 	int num;
 	char currentCoordinate[4];
-	
 	int gameIndex;
 }Group;
 typedef struct{
@@ -187,8 +186,12 @@ void CookRequest(char* request, int PlayerSocketID){
 		LockThread();
 		int currentPlayersOnline = connectedPlayers.num;
 		int index = GetIndex(mySocket);
-		if(index != currentPlayersOnline - 1){
-			for (int i = index; i < connectedPlayers.num - 2; i++)
+		if(index == currentPlayersOnline - 1){//Caso en el que el jugador es el último de la lista
+			connectedPlayers.list[index].currentGroupIndex =  -1;
+			connectedPlayers.list[index].socket =-1;
+		}
+		else{
+			for (int i = index; i < connectedPlayers.num - 1; i++)
 			{
 				connectedPlayers.list[i] = connectedPlayers.list[i+1];
 			}
@@ -198,11 +201,13 @@ void CookRequest(char* request, int PlayerSocketID){
 			allGroups.num--;
 		}
 		else{
-			for(int i = index; i < groupsNum - 2;i++){
+			for(int i = index; i < groupsNum - 1;i++){
 				allGroups.list[i] = allGroups.list[i + 1];
 			}
 		}
 		connectedPlayers.num--;
+		if(connectedPlayers.num <0)
+			connectedPlayers.num = 0;
 		UnlockThread();
 		close(mySocket);
 		pthread_exit(0);
@@ -237,15 +242,12 @@ void CookRequest(char* request, int PlayerSocketID){
 				write(connectedPlayers.list[i].socket, password, sizeof(password));
 			}
 			//Tell this players the connected players
-			
 		}
 		write(mySocket, DBRequest, sizeof(DBRequest));
 		//Actually add this user to the connectedList
 		LockThread();
 		connectedPlayers.list[connectedPlayers.num].socket = mySocket;
 		strcpy(connectedPlayers.list[connectedPlayers.num].username, username);
-		connectedPlayers.list[connectedPlayers.num].currentGroupIndex = connectedPlayers.num;
-		printf("We stored the user called %s with socket %d and group %d\n", username, mySocket, connectedPlayers.num);
 		//Create a group for player with the same index
 		//The socket index should always be the same as the group index and this group index will be de 
 		//default group of this player.
@@ -259,10 +261,11 @@ void CookRequest(char* request, int PlayerSocketID){
 		connectedPlayers.num++;
 		allGroups.num++;
 		UnlockThread();
+		printf("We stored the user called %s with socket %d and group %d\n", username, mySocket, connectedPlayers.num-1);
+			
 	}
 	break;
 	}
-		
 	case 3: //Borrar usuario de base de datos
 		break;
 	case 4://Invitación a grupo
@@ -361,6 +364,7 @@ void CookRequest(char* request, int PlayerSocketID){
 		Game waitingGame = allGames.list[allGames.gamesNum];
 		int added = 0;
 		int alreadyGroupsNum = 0;
+		char tempStrng[100];
 		if(waitingGame.groupsNum == 0){//No tenemos grupos en la partida aun
 			printf("we created a game for the group : %d\n", groupIndex);
 			waitingGame.groupsIndexes[0] = groupIndex;
@@ -381,10 +385,38 @@ void CookRequest(char* request, int PlayerSocketID){
 					added = 1;						
 				}
 				if(waitingGame.groupsIndexes[i] != -1 && waitingGame.groupsIndexes[i] != groupIndex){//Tell the groups that are already waiting that one more group just got added
-					char notificationToGroup[10];
+					char ourTeamInfo[50];
+					sprintf(ourTeamInfo, "%d", groupIndex);//Preparamos nuestra información para decirle al resto que nos hemos unido
+					for(int j = 0; j < 4;j++){
+						int userSocket = myGroup.partnersSockets[j];
+						if(userSocket !=-1){
+							strcat(ourTeamInfo,"/"); 
+							strcat(ourTeamInfo, connectedPlayers.list[GetIndex(userSocket)].username);
+						}
+						else{
+							strcat(ourTeamInfo,"/"); 
+							strcat(ourTeamInfo, "EMPTY");
+						}
+						
+						int enemyPlayerSocket = allGroups.list[waitingGame.groupsIndexes[i]].partnersSockets[j];
+						char teamIndex[3];
+						sprintf(teamIndex, "%d", waitingGame.groupsIndexes[i]);
+						strcat(tempStrng, teamIndex);//Copia el indice del grupo
+						if(enemyPlayerSocket != -1){
+							strcat(tempStrng, "/");
+							strcat(tempStrng, connectedPlayers.list[GetIndex(enemyPlayerSocket)].username);
+						}
+						else{
+							strcat(tempStrng, "/");
+							strcat(ourTeamInfo, "EMPTY");
+							
+						}
+					}
+					
+					char notificationToGroup[250];
 					printf("We are notifying a group that already is in the game\n");
 					int targetGroup = waitingGame.groupsIndexes[i];
-					sprintf(notificationToGroup, "9/1/");
+					sprintf(notificationToGroup, "9/1/%s", ourTeamInfo);
 					NotifyGroup(targetGroup, notificationToGroup);
 					alreadyGroupsNum++;					
 				}				
@@ -394,7 +426,7 @@ void CookRequest(char* request, int PlayerSocketID){
 				StartGame();
 			}
 			char notificationToOwnGroup[250];
-			sprintf(notificationToOwnGroup, "9/%d/",alreadyGroupsNum);
+			sprintf(notificationToOwnGroup, "9/%d/%s",alreadyGroupsNum, tempStrng);
 			NotifyGroup(groupIndex, notificationToOwnGroup);
 		}
 		UnlockThread();
@@ -464,15 +496,17 @@ void CookRequest(char* request, int PlayerSocketID){
 		}
 		//13/groupindex1/grupIndex2/.../
 		NotifyGroup(myGroupIndex, receiveCoordinate);
+		}
 	}
 	}//Final del switch
-}
+	
+
 void StartGame()
 {
 	int seed = rand() % 999999 + 100000;
 	//00  0 8  18 0  18 8 : spawnPoints 
 	int spawnPoints[4][2] = {  
-	{0, 0} ,   /*  initializers for row indexed by 0 */
+		{0, 0} ,   /*  initializers for row indexed by 0 */
 	{0, 1} ,   /*  initializers for row indexed by 1 */
 	{18, 0} ,  /*  initializers for row indexed by 2 */
 	{18, 8}
